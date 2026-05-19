@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel, Field
 from .user_schema  import UserProfile
 from .scheme_schema import Scheme
