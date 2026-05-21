@@ -1,4 +1,4 @@
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Union, Literal
 from pydantic import BaseModel, Field
 
 class EligibilityRule(BaseModel):
@@ -25,3 +25,17 @@ class Scheme(BaseModel):
     official_source: Optional[str] = Field(None, description="Link to the official department source page.")
     deadline: Optional[str] = Field(None, description="Application deadline date, if applicable.")
     eligibility_rules: List[EligibilityRule] = Field(default_factory=list, description="Structured criteria for evaluation.")
+
+class EligibilityEvaluation(BaseModel):
+    eligible: Union[bool, Literal["unknown"]] = Field(
+       ..., 
+        description="True if eligible, False if ineligible, 'unknown' if missing required info."
+    )
+    reason: List[str] = Field(
+        default_factory=list, 
+        description="List of text justifications for the eligibility status."
+    )
+    missing_requirements: List[str] = Field(
+        default_factory=list, 
+        description="List of user profile fields that are missing but required for validation." 
+    )
