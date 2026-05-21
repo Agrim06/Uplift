@@ -1,0 +1,275 @@
+[
+  {
+    "id": "SCH-CENTRAL-CSSS",
+    "name": "Central Sector Scheme of Scholarship for College and University Students",
+    "description": "Provides financial assistance to meritorious students from low-income families to meet their day-to-day expenses while pursuing higher studies.",
+    "scheme_type": "Scholarship",
+    "target_group": "Meritorious Students",
+    "age_limit": "18 - 25 years",
+    "income_limit": 450000.0,
+    "education_requirement": "Above 80th percentile in Class 12 and pursuing regular degree course",
+    "occupation": "Student",
+    "state": "Central",
+    "category": ["General", "OBC", "SC", "ST"],
+    "required_documents": [
+      "Class 12 Marksheet",
+      "Income Certificate",
+      "Caste Certificate (if applicable)",
+      "Aadhaar Card",
+      "Bank Passbook copy",
+      "Bonafide Certificate from College"
+    ],
+    "benefits": "Rs. 12,000 per annum for graduation (first 3 years) and Rs. 20,000 per annum for post-graduation.",
+    "application_link": "https://scholarships.gov.in/",
+    "official_source": "https://www.education.gov.in/",
+    "deadline": "2026-12-31",
+    "eligibility_rules": [
+      {
+        "attribute": "income",
+        "condition": "lte",
+        "value": 450000.0,
+        "description": "Annual family income must not exceed Rs. 4,50,000."
+      },
+      {
+        "attribute": "education",
+        "condition": "in",
+        "value": ["Undergraduate", "Postgraduate"],
+        "description": "Must be pursuing a regular higher education degree course."
+      },
+      {
+        "attribute": "occupation",
+        "condition": "equals",
+        "value": "Student",
+        "description": "Must be currently studying as a regular student."
+      }
+    ]
+  },
+  {
+    "id": "SCH-KAR-PM-SC",
+    "name": "Post Matric Scholarship for Scheduled Caste Students (Karnataka)",
+    "description": "Financial assistance to Scheduled Caste students residing in Karnataka who are pursuing post-matric studies.",
+    "scheme_type": "Scholarship",
+    "target_group": "SC Students",
+    "age_limit": "No upper age limit",
+    "income_limit": 250000.0,
+    "education_requirement": "Class 10 completed, pursuing post-matric courses (Class 11, Diploma, Degree, or PG)",
+    "occupation": "Student",
+    "state": "Karnataka",
+    "category": ["SC"],
+    "required_documents": [
+      "Caste Certificate (RD number verified)",
+      "Income Certificate (RD number verified)",
+      "SSLC (Class 10) Marksheet",
+      "College Fee Receipt / Admission Letter",
+      "Aadhaar Card linked to Bank Account"
+    ],
+    "benefits": "Reimbursement of tuition fees, admission fees, and monthly maintenance allowance.",
+    "application_link": "https://ssp.postmatric.karnataka.gov.in/",
+    "official_source": "https://sw.kar.nic.in/",
+    "deadline": "2026-01-31",
+    "eligibility_rules": [
+      {
+        "attribute": "state",
+        "condition": "equals",
+        "value": "Karnataka",
+        "description": "Must be a permanent resident of Karnataka."
+      },
+      {
+        "attribute": "category",
+        "condition": "equals",
+        "value": "SC",
+        "description": "Must belong to the Scheduled Caste (SC) category."
+      },
+      {
+        "attribute": "income",
+        "condition": "lte",
+        "value": 250000.0,
+        "description": "Annual family income must not exceed Rs. 2,50,000."
+      },
+      {
+        "attribute": "occupation",
+        "condition": "equals",
+        "value": "Student",
+        "description": "Must be currently enrolled in a post-matric course."
+      }
+    ]
+  },
+  {
+    "id": "SCH-CENTRAL-PRAGATI",
+    "name": "AICTE Pragati Scholarship Scheme for Girl Students",
+    "description": "An initiative by AICTE to support girl students pursuing technical education (Degree or Diploma) in recognized institutions.",
+    "scheme_type": "Scholarship",
+    "target_group": "Girl Students",
+    "age_limit": "No age limit",
+    "income_limit": 800000.0,
+    "education_requirement": "Admitted to 1st year of Degree/Diploma course or 2nd year via lateral entry",
+    "occupation": "Student",
+    "state": "Central",
+    "category": ["General", "OBC", "SC", "ST"],
+    "required_documents": [
+      "Class 10 and Class 12 Marksheets",
+      "Income Certificate",
+      "Admission Letter from College",
+      "Tuition Fee Receipt",
+      "Aadhaar Card",
+      "Bank Account Details",
+      "Declaration of single/two girl child status"
+    ],
+    "benefits": "Rs. 50,000 per annum for course duration as a lump sum amount for college fee, computer purchase, books, etc.",
+    "application_link": "https://scholarships.gov.in/",
+    "official_source": "https://www.aicte-india.org/",
+    "deadline": "2026-11-30",
+    "eligibility_rules": [
+      {
+        "attribute": "gender",
+        "condition": "equals",
+        "value": "Female",
+        "description": "Must be a female student."
+      },
+      {
+        "attribute": "income",
+        "condition": "lte",
+        "value": 800000.0,
+        "description": "Annual family income must not exceed Rs. 8,00,000."
+      },
+      {
+        "attribute": "occupation",
+        "condition": "equals",
+        "value": "Student",
+        "description": "Must be studying in an AICTE-approved institution."
+      }
+    ]
+  },
+  {
+    "id": "SCH-CENTRAL-NMMSS",
+    "name": "National Means-cum-Merit Scholarship Scheme (NMMSS)",
+    "description": "Scholarships to meritorious students of economically weaker sections to prevent them from dropping out at Class 8 and encourage them to continue secondary education.",
+    "scheme_type": "Scholarship",
+    "target_group": "School Students",
+    "age_limit": "12 - 16 years",
+    "income_limit": 350000.0,
+    "education_requirement": "Studying in Class 9, scored minimum 55% (50% for SC/ST) in Class 8",
+    "occupation": "Student",
+    "state": "Central",
+    "category": ["General", "OBC", "SC", "ST"],
+    "required_documents": [
+      "Class 8 Marksheet",
+      "Income Certificate",
+      "Caste Certificate (if applicable)",
+      "Aadhaar Card",
+      "Bank Account details"
+    ],
+    "benefits": "Rs. 12,000 per annum (Rs. 1,000 per month) from Class 9 to Class 12.",
+    "application_link": "https://scholarships.gov.in/",
+    "official_source": "https://www.education.gov.in/",
+    "deadline": "2026-12-31",
+    "eligibility_rules": [
+      {
+        "attribute": "income",
+        "condition": "lte",
+        "value": 350000.0,
+        "description": "Annual family income must not exceed Rs. 3,50,000."
+      },
+      {
+        "attribute": "education",
+        "condition": "equals",
+        "value": "Class 9",
+        "description": "Must be currently studying in Class 9 in a government/local body school."
+      },
+      {
+        "attribute": "occupation",
+        "condition": "equals",
+        "value": "Student",
+        "description": "Must be a regular student."
+      }
+    ]
+  },
+  {
+    "id": "SCH-KAR-PM-OBC",
+    "name": "Post Matric Scholarship for OBC Students (Karnataka)",
+    "description": "Provides tuition fee concession and maintenance allowance to OBC category students (Cat-1, 2A, 3A, 3B) in Karnataka pursuing post-matric courses.",
+    "scheme_type": "Scholarship",
+    "target_group": "OBC Students",
+    "age_limit": "No age limit",
+    "income_limit": 250000.0,
+    "education_requirement": "Class 10 completed, pursuing post-matric studies",
+    "occupation": "Student",
+    "state": "Karnataka",
+    "category": ["OBC"],
+    "required_documents": [
+      "Caste and Income Certificate (RD number verified)",
+      "Previous Class Marksheet",
+      "Aadhaar Card linked to Bank Account",
+      "College Admission Fee Receipt"
+    ],
+    "benefits": "Tuition fee concession and monthly maintenance allowance.",
+    "application_link": "https://ssp.postmatric.karnataka.gov.in/",
+    "official_source": "https://backwardclasses.kar.nic.in/",
+    "deadline": "2026-01-31",
+    "eligibility_rules": [
+      {
+        "attribute": "state",
+        "condition": "equals",
+        "value": "Karnataka",
+        "description": "Must be a permanent resident of Karnataka."
+      },
+      {
+        "attribute": "category",
+        "condition": "equals",
+        "value": "OBC",
+        "description": "Must belong to OBC category (Category 1, 2A, 3A, 3B)."
+      },
+      {
+        "attribute": "income",
+        "condition": "lte",
+        "value": 250000.0,
+        "description": "Annual family income must not exceed Rs. 2,50,000 for Cat-1 (Rs. 1,00,000 for other sub-casts)."
+      },
+      {
+        "attribute": "occupation",
+        "condition": "equals",
+        "value": "Student",
+        "description": "Must be currently studying in a post-matric course."
+      }
+    ]
+  },
+  {
+    "id": "SCH-CENTRAL-PWD",
+    "name": "Post-Matric Scholarship for Students with Disabilities",
+    "description": "Provides financial support to students with disabilities to enable them to pursue post-matric or post-secondary courses.",
+    "scheme_type": "Scholarship",
+    "target_group": "Students with Disabilities",
+    "age_limit": "No age limit",
+    "income_limit": 250000.0,
+    "education_requirement": "Class 10 completed, pursuing post-matric courses",
+    "occupation": "Student",
+    "state": "Central",
+    "category": ["General", "OBC", "SC", "ST"],
+    "required_documents": [
+      "Disability Certificate (minimum 40% disability)",
+      "Class 10 Marksheet",
+      "Income Certificate",
+      "College Fee Receipt",
+      "Aadhaar Card",
+      "Bank details copy"
+    ],
+    "benefits": "Monthly maintenance allowance, book grant, and tuition fee reimbursement.",
+    "application_link": "https://scholarships.gov.in/",
+    "official_source": "https://disabilityaffairs.gov.in/",
+    "deadline": "2026-11-30",
+    "eligibility_rules": [
+      {
+        "attribute": "income",
+        "condition": "lte",
+        "value": 250000.0,
+        "description": "Annual family income must not exceed Rs. 2,50,000."
+      },
+      {
+        "attribute": "occupation",
+        "condition": "equals",
+        "value": "Student",
+        "description": "Must be pursuing a post-matric course."
+      }
+    ]
+  }
+]

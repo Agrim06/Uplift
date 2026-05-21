@@ -1,31 +1,33 @@
 from fastapi import APIRouter, HTTPException 
 from app.schemas.api_scheme import SchemeRecommendationRequest, SchemeRecommendationResponse
-from app.schemas.user_schema import UserProfile
+from app.services.profile_extractor import ProfileExtractionEngine
 
 router = APIRouter()
+extractor_engine = ProfileExtractionEngine()
 
 @router.post("/", response_model=SchemeRecommendationResponse, summary="Process user query")
 async def process_chat(request: SchemeRecommendationRequest):
-
-    #Hardcoded dummy for testing
     try:
-        mock_profile = UserProfile(
-            age=20,
-            state="Karnataka",
-            occupation="Student",
-            education=None,
-            income=200000.0,
-            gender=None,
-            category=None
-       )
-       
+        
+        profile, missing_fields = await extractor_engine.extract_profile(
+            query=request.query, 
+            existing_profile=request.existing_profile
+        )
+        
+
+        if missing_fields:
+            missing_str = ", ".join(missing_fields)
+            system_message = f"I have updated your profile. To help me recommend exact schemes, could you please provide your: {missing_str}?"
+        else:
+            system_message = "Thank you! I have all details. Evaluating eligible schemes for you now..."
+            
         return SchemeRecommendationResponse(
-            profile_summary=mock_profile,
-            eligible_schemes=[], # Empty for now
+            profile_summary=profile,
+            eligible_schemes=[],  
             documents_needed=[],
-            missing_info=["education", "category"],
-            system_message="I see you are a student from Karnataka. Could you please specify your current education level and social category so I can find exact schemes for you?"
-       )
+            missing_info=missing_fields,
+            system_message=system_message
+        )
     
     except Exception as e:
-        raise HTTPException(status_code=500, detail= str(e))
+        raise HTTPException(status_code=500, detail=str(e))

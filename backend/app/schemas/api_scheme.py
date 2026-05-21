@@ -4,7 +4,7 @@ from .user_schema  import UserProfile
 from .scheme_schema import Scheme
 
 class SchemeRecommendationRequest(BaseModel):
-    query: str = Field(..., example="I am a 20-year-old engineering student from Karnataka with an annual family income of 2 lakh.")   
+    query: str = Field(..., examples=["I am a 20-year-old engineering student from Karnataka with an annual family income of 2 lakh."])   
     existing_profile: Optional[UserProfile] = None 
 
 class SchemeRecommendationResponse(BaseModel):

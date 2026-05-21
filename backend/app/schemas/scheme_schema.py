@@ -1,19 +1,27 @@
-from typing import List, Optional
-from pydantic import BaseModel, Field, HttpUrl
+from typing import List, Optional, Any
+from pydantic import BaseModel, Field
+
+class EligibilityRule(BaseModel):
+    attribute: str = Field(..., description="The user profile attribute this rule targets.")
+    condition: str = Field(..., description="The comparison condition: 'equals', 'lte', 'gte', 'in', etc.")
+    value: Any = Field(..., description="The comparative value (e.g. threshold, state string, list of strings).")
+    description: str = Field(..., description="Plain-text human-friendly explanation of the rule.")
 
 class Scheme(BaseModel):
-    scheme_id: str = Field(..., description="Unique identifier for the scheme.")
-    scheme_name: str = Field(..., description="Official name of the government scheme.")
+    id: str = Field(..., description="Unique identifier for the scheme.")
+    name: str = Field(..., description="Official name of the government scheme.")
     description: str = Field(..., description="A brief summary of what the scheme provides.")
-    
-    income_limit: Optional[float] = Field(None, description="Maximum allowable annual family income to be eligible.")
-    age_limit_min: Optional[int] = Field(None, description="Minimum age required.")
-    age_limit_max: Optional[int] = Field(None, description="Maximum age allowed.")
-    state_restriction: Optional[str] = Field(None, description="Specific state this scheme applies to. None if central/national.")
-    
-    eligibility_criteria: List[str] = Field(default_factory=list, description="List of textual criteria for LLM evaluation.") 
+    scheme_type: str = Field(..., description="Type of the scheme (e.g. Scholarship, Welfare).")
+    target_group: str = Field(..., description="Target group details.")
+    age_limit: Optional[str] = Field(None, description="Age constraints represented as descriptive text.")
+    income_limit: Optional[float] = Field(None, description="Maximum allowable annual family income in INR.")
+    education_requirement: str = Field(..., description="Educational requirement details.")
+    occupation: str = Field(..., description="Target occupation (e.g., Student, Farmer).")
+    state: str = Field(..., description="State of origin/restriction (e.g., Karnataka, Central).")
+    category: List[str] = Field(..., description="Social categories allowed (e.g. SC, ST, OBC, General).")
     required_documents: List[str] = Field(default_factory=list, description="List of documents needed to apply.")
-    benefits: List[str] = Field(default_factory=list, description="List of financial or material benefits provided.")
-    official_link: Optional[HttpUrl] = Field(None, description="Link to the official application portal.")
+    benefits: str = Field(..., description="Plain-text description of benefits.")
+    application_link: Optional[str] = Field(None, description="Link to the official application portal.")
+    official_source: Optional[str] = Field(None, description="Link to the official department source page.")
     deadline: Optional[str] = Field(None, description="Application deadline date, if applicable.")
-
+    eligibility_rules: List[EligibilityRule] = Field(default_factory=list, description="Structured criteria for evaluation.")

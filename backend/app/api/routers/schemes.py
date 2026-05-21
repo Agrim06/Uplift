@@ -1,38 +1,54 @@
+import os
+import json
 from typing import List
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, HTTPException
 from app.schemas.scheme_schema import Scheme
 
-router= APIRouter()
+router = APIRouter()
 
-@router.get("/", response_model = List[Scheme],  summary="List all government schemes")
+# Construct path to schemes.json relative to this file
+SCHEMES_FILE_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "..", "..", "data", "schemes.json")
+)
+
+def load_schemes_from_json() -> List[Scheme]:
+    if not os.path.exists(SCHEMES_FILE_PATH):
+        raise HTTPException(
+            status_code=500,
+            detail=f"Schemes database file not found at: {SCHEMES_FILE_PATH}"
+        )
+    try:
+        with open(SCHEMES_FILE_PATH, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            return [Scheme(**item) for item in data]
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error reading schemes database: {str(e)}"
+        )
+
+@router.get("/", response_model=List[Scheme], summary="List all government schemes")
 async def get_schemes(
-    state: str = Query(None, description="Filter schemes by state"),
+    state: str = Query(None, description="Filter schemes by state (case-insensitive)"),
     limit: int = Query(10, description="Maximum number of schemes to return")
 ):
-
-    #Future query for database mock data for testing
-
-    mock_scheme = Scheme(
-        scheme_id="SCH-001",
-        scheme_name="Post Matric Scholarship",
-        description="Scholarship for students pursuing higher education.",
-        income_limit=250000.0,
-        age_limit_min=18,
-        age_limit_max=None,
-        state_restriction="Karnataka",
-        eligibility_criteria=["Must be a resident of Karnataka", "Must be pursuing a degree"],
-        required_documents=["Aadhar Card", "Income Certificate", "Bonafide Certificate"],
-        benefits=["Financial assistance for tuition fees"],
-        official_link=None,
-        deadline=None
-    )
-
-    if state and state.lower() != "karnataka":
-        return []
-    return [mock_scheme]
-
+    schemes = load_schemes_from_json()
+    
+    if state:
+        # Filter by state (case-insensitive)
+        # Central schemes apply nationally and are returned for any state filter.
+        state_lower = state.lower()
+        schemes = [
+            s for s in schemes 
+            if s.state.lower() == "central" or s.state.lower() == state_lower
+        ]
+        
+    return schemes[:limit]
 
 @router.get("/{scheme_id}", response_model=Scheme, summary="Get Specific scheme details")
-async def get_scheme_by_id(scheme_id:str):
-    #return it from db in future
-    pass
+async def get_scheme_by_id(scheme_id: str):
+    schemes = load_schemes_from_json()
+    for s in schemes:
+        if s.id.lower() == scheme_id.lower():
+            return s
+    raise HTTPException(status_code=404, detail=f"Scheme with ID '{scheme_id}' not found.")
