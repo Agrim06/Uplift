@@ -1,7 +1,7 @@
 from typing import List, Dict, Any, Tuple
 from app.schemas.user_schema import UserProfile
 from app.schemas.scheme_schema import Scheme, EligibilityRule, EligibilityEvaluation
-
+from app.services.scheme_service import SchemeRetrievalService
 class EligibilityEvaluator:
     @staticmethod
     def evaluate_rule(user_val: Any, rule: EligibilityRule) -> Tuple[bool, str]:
@@ -81,3 +81,34 @@ class EligibilityEvaluator:
                 reason=reasons,
                 missing_requirements=[]
             )
+
+class RecommendationService:
+    def __init__(self, retrieval_service: SchemeRetrievalService = None):
+        self.retrieval_service = retrieval_service or SchemeRetrievalService()
+    
+    def get_recommendations(self, profile: UserProfile) -> List[Dict[str, Any]]:
+        candidates = self.retrieval_service.get_candidate_schemes(profile)
+        recommendations = []
+
+        for scheme in candidates:
+            evaluation = EligibilityEvaluator.evaluate_scheme(profile, scheme)
+
+            if evaluation.eligible is False:
+                continue 
+
+            recommendations.append({
+                "scheme": scheme,
+                "evaluation": evaluation
+            })
+    
+        def ranking_key(item):
+            eligible_status = item["evaluation"].eligible
+            is_central = item["scheme"].state.lower() == "central"
+
+            status_priority = 0 if eligible_status is True else 1
+            origin_priority = 1 if is_central else 0
+
+            return (status_priority, origin_priority)
+    
+        recommendations.sort(key=ranking_key)
+        return recommendations
