@@ -72,6 +72,8 @@ def test_chat_api_endpoint():
     data = response.json()
     assert data["profile"]["age"] == 20
     assert set(data["missing_info"]) == {"state", "income", "occupation", "education", "gender", "category"}
+    assert data["reflection"]["need_more_info"] is True
+    assert data["reflection"]["low_confidence"] is True
     
     # Test chat API with complete fields
     payload_complete = {
@@ -87,6 +89,8 @@ def test_chat_api_endpoint():
     assert data_complete["profile"]["income"] == 200000.0
     assert data_complete["profile"]["category"] == "OBC"
     assert data_complete["missing_info"] == []
+    assert data_complete["reflection"]["need_more_info"] is False
+    assert data_complete["reflection"]["low_confidence"] is False
     
     eligible_ids = [s["id"] for s in data_complete["eligible_schemes"]]
     assert "SCH-CENTRAL-PRAGATI" in eligible_ids

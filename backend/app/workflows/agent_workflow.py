@@ -4,6 +4,7 @@ from app.schemas.user_schema import UserProfile
 from app.services.profile_extractor import ProfileExtractionEngine
 from app.services.scheme_service import SchemeRetrievalService
 from app.services.recommendation_service import EligibilityEvaluator
+from app.agents.reflection_agent import ReflectionAgent
 
 logger = logging.getLogger(__name__)
 
@@ -65,32 +66,16 @@ def evaluate_eligibility_step(state: Dict[str, Any]) -> Dict[str, Any]:
 def reflection_step(state: Dict[str, Any]) -> Dict[str, Any]:
     """
     Stage 4: Reflection Step
-    Performs consistency checks and compiles agent reasoning logs.
+    Performs consistency checks and compiles agent reasoning logs via ReflectionAgent.
     """
-    eligible_schemes = state["eligible_schemes"]
-    missing_info = state["missing_info"]
-    evaluations = state["evaluations"]
-    reasons = []
-    
-    # Consistency Checks
-    profile = state["profile"]
-    if profile.age is not None and profile.age < 0:
-        reasons.append("Logical Alert: User age is negative.")
-
-    # Formulate Reasoning Scratchpad
-    if eligible_schemes:
-        reasons.append(f"Successfully matched {len(eligible_schemes)} eligible scheme(s).")
-        for scheme in eligible_schemes:
-            eval_details = evaluations[scheme.id]
-            reasons.append(f"- {scheme.name}: {', '.join(eval_details.reason)}")
-    else:
-        reasons.append("No fully eligible schemes identified for this profile.")
-        
-    if missing_info:
-        reasons.append(f"Potential schemes exist, but missing info: {', '.join(missing_info)}")
-
+    reflection_data = ReflectionAgent.reflect(
+        query=state["query"],
+        profile=state["profile"],
+        eligible_schemes=state["eligible_schemes"],
+        missing_info=state["missing_info"]
+    )
     return {
-        "reasoning": "\n".join(reasons)
+        "reflection": reflection_data
     }
 
 def format_response_step(state: Dict[str, Any]) -> Dict[str, Any]:
@@ -109,7 +94,8 @@ def format_response_step(state: Dict[str, Any]) -> Dict[str, Any]:
         "profile": state["profile"].model_dump(),
         "eligible_schemes": [s.model_dump() for s in eligible_schemes],
         "missing_info": state["missing_info"],
-        "documents": sorted(list(documents))
+        "documents": sorted(list(documents)),
+        "reflection": state["reflection"]
     }
 
 # ── ORCHESTRATOR ─────────────────────────────────────────────────────────────
@@ -128,6 +114,7 @@ async def run_workflow(query: str, existing_profile: Optional[UserProfile] = Non
         "evaluations": {},
         "missing_info": [],
         "reasoning": "",
+        "reflection": None,
     }
     
     try:
@@ -154,5 +141,12 @@ async def run_workflow(query: str, existing_profile: Optional[UserProfile] = Non
             "eligible_schemes": [],
             "missing_info": [],
             "documents": [],
+            "reflection": {
+                "need_more_info": False,
+                "missing": [],
+                "low_confidence": True,
+                "conflicts": [],
+                "reasoning": f"Workflow failed: {str(e)}"
+            },
             "error": f"Workflow failed: {str(e)}"
         }
