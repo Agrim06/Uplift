@@ -65,33 +65,37 @@ def test_profile_merge():
 def test_chat_api_endpoint():
     # Test chat API with missing fields
     payload = {
-        "query": "I am 20"
+        "message": "I am 20"
     }
     response = client.post("/api/v1/chat/", json=payload)
     assert response.status_code == 200
     data = response.json()
-    assert data["profile_summary"]["age"] == 20
-    assert set(data["missing_info"]) == {"state", "income", "occupation", "education"}
-    assert "To help me recommend exact schemes, could you please provide your:" in data["system_message"]
+    assert data["profile"]["age"] == 20
+    assert set(data["missing_info"]) == {"state", "income", "occupation", "education", "gender", "category"}
     
     # Test chat API with complete fields
     payload_complete = {
-        "query": "I am 20-year-old engineering student from Karnataka with family income of 2 lakh"
+        "message": "I am a 20-year-old female engineering student from Karnataka belonging to OBC category with family income of 2 lakh."
     }
     response_complete = client.post("/api/v1/chat/", json=payload_complete)
     assert response_complete.status_code == 200
     data_complete = response_complete.json()
-    assert data_complete["profile_summary"]["age"] == 20
-    assert data_complete["profile_summary"]["state"] == "Karnataka"
-    assert data_complete["profile_summary"]["occupation"] == "Student"
-    assert data_complete["profile_summary"]["education"] == "Engineering"
-    assert data_complete["profile_summary"]["income"] == 200000.0
+    assert data_complete["profile"]["age"] == 20
+    assert data_complete["profile"]["state"] == "Karnataka"
+    assert data_complete["profile"]["occupation"] == "Student"
+    assert data_complete["profile"]["education"] == "Engineering"
+    assert data_complete["profile"]["income"] == 200000.0
+    assert data_complete["profile"]["category"] == "OBC"
     assert data_complete["missing_info"] == []
-    assert "Thank you! I have all details. Evaluating eligible schemes for you now..." in data_complete["system_message"]
+    
+    eligible_ids = [s["id"] for s in data_complete["eligible_schemes"]]
+    assert "SCH-CENTRAL-PRAGATI" in eligible_ids
+    assert "SCH-CENTRAL-PWD" in eligible_ids
+    assert "Income Certificate" in data_complete["documents"]
 
     # Test chat API with merge
     payload_merge = {
-        "query": "I am 20",
+        "message": "I am 20",
         "existing_profile": {
             "state": "Karnataka",
             "occupation": "Farmer",
@@ -102,9 +106,9 @@ def test_chat_api_endpoint():
     response_merge = client.post("/api/v1/chat/", json=payload_merge)
     assert response_merge.status_code == 200
     data_merge = response_merge.json()
-    assert data_merge["profile_summary"]["age"] == 20
-    assert data_merge["profile_summary"]["state"] == "Karnataka"
-    assert data_merge["profile_summary"]["occupation"] == "Farmer"
-    assert data_merge["profile_summary"]["education"] == "Class 10"
-    assert data_merge["profile_summary"]["income"] == 100000.0
+    assert data_merge["profile"]["age"] == 20
+    assert data_merge["profile"]["state"] == "Karnataka"
+    assert data_merge["profile"]["occupation"] == "Farmer"
+    assert data_merge["profile"]["education"] == "Class 10"
+    assert data_merge["profile"]["income"] == 100000.0
     assert data_merge["missing_info"] == []
