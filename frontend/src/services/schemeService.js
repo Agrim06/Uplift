@@ -59,8 +59,8 @@ export const normalizePaginatedSchemes = (responseData) => {
   const safeItems = Array.isArray(items) ? items : [];
   const totalCount = responseData.total_count ?? responseData.total ?? responseData.count ?? safeItems.length;
   const page = responseData.page ?? responseData.current_page ?? 1;
-  const limit = responseData.limit ?? responseData.page_size ?? safeItems.length || 10;
-  const totalPages = responseData.pages ?? responseData.total_pages ?? Math.ceil(totalCount / limit) || 1;
+  const limit = (responseData.limit ?? responseData.page_size ?? safeItems.length) || 10;
+  const totalPages = (responseData.pages ?? responseData.total_pages ?? Math.ceil(totalCount / limit)) || 1;
 
   return {
     items: safeItems.map(normalizeScheme),
