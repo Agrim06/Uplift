@@ -16,6 +16,7 @@ class ReflectionResult(BaseModel):
     low_confidence: bool = Field(..., description="True if the extraction confidence is low.")
     conflicts: List[str] = Field(default_factory=list, description="List of logical conflicts found.")
     reasoning: str = Field(..., description="Reasoning scratchpad summarizing reflection findings.")
+    agent_reply: Optional[str] = Field(None, description="Empathic conversational response formulated by the AI.")
 
 class ChatResponse(BaseModel):
     profile: UserProfile = Field(..., description="The user profile as understood by the system so far.")

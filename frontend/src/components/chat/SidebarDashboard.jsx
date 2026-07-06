@@ -1,7 +1,9 @@
 import React from 'react';
 import { FiCheckCircle, FiAlertCircle, FiAward, FiUserCheck, FiChevronRight } from 'react-icons/fi';
+import { useChatStore } from '../../store/useChatStore';
 
 export default function SidebarDashboard({ profileSummary, eligibleSchemes, missingInfo }) {
+  const { setSelectedSchemeDetail } = useChatStore();
   const profileKeys = Object.keys(profileSummary || {});
   
   return (
@@ -72,17 +74,18 @@ export default function SidebarDashboard({ profileSummary, eligibleSchemes, miss
         ) : (
           <div className="space-y-1.5 overflow-y-auto flex-1 max-h-[280px] pr-0.5">
             {eligibleSchemes.map((scheme) => (
-              <a
+              <button
                 key={scheme.id || scheme.scheme_id}
-                href={`/explorer?id=${scheme.id || scheme.scheme_id}`}
-                className="flex items-center justify-between p-2.5 bg-green-50/20 hover:bg-green-50/60 border border-green-100/40 hover:border-green-300 rounded-xl text-xs text-gray-750 font-medium transition cursor-pointer"
+                type="button"
+                onClick={() => setSelectedSchemeDetail(scheme)}
+                className="w-full text-left flex items-center justify-between p-2.5 bg-green-50/20 hover:bg-green-50/60 border border-green-100/40 hover:border-green-300 rounded-xl text-xs text-gray-750 font-medium transition cursor-pointer"
               >
                 <div className="flex flex-col space-y-0.5 max-w-[80%]">
                   <span className="font-bold text-gray-800 truncate">{scheme.title || scheme.name}</span>
                   <span className="text-[9px] text-gray-400 capitalize truncate">{scheme.category}</span>
                 </div>
                 <FiChevronRight className="w-3.5 h-3.5 text-green-600 flex-shrink-0" />
-              </a>
+              </button>
             ))}
           </div>
         )}

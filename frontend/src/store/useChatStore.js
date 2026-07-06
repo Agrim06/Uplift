@@ -7,9 +7,10 @@ export const useChatStore = create((set) => ({
     missingInfo : [],
     isTyping : false,
     error: null,
+    selectedSchemeDetail: null,
 
     addMessage: (message) => set((state) => ({
-        message: [...state.messages,{
+        messages: [...state.messages, {
             ...message,
             id: message.id || Date.now().toString(),
             timestamp: new Date()
@@ -18,7 +19,7 @@ export const useChatStore = create((set) => ({
     })),
 
     updateAPIResponse: (data) => set((state) => ({
-        profileSummary: data.profile_summary,
+        profileSummary: data.profile || data.profile_summary || {},
         eligibleSchemes: data.eligible_schemes,
         missingInfo: data.missing_info,
         isTyping: false,
@@ -27,12 +28,18 @@ export const useChatStore = create((set) => ({
 
     setTyping: (status) => set({isTyping : status}),
     setError: (error) => set({error, isTyping: false}),
+    
+    // Slide-over drawer actions
+    setSelectedSchemeDetail: (scheme) => set({ selectedSchemeDetail: scheme }),
+    closeSchemeDetail: () => set({ selectedSchemeDetail: null }),
+
     clearChat: () => set({
         messages: [], 
         profileSummary: {}, 
         eligibleSchemes: [], 
         missingInfo: [], 
         error: null, 
-        isTyping: false 
+        isTyping: false,
+        selectedSchemeDetail: null
     })
 }));

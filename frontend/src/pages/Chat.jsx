@@ -4,6 +4,7 @@ import chatService from '../services/chatService';
 import ChatBox from '../components/chat/ChatBox';
 import InputBar from '../components/chat/InputBar';
 import SidebarDashboard from '../components/chat/SidebarDashboard';
+import SchemeDetailDrawer from '../components/chat/SchemeDetailDrawer';
 import { toast } from 'react-hot-toast';
 
 export default function Chat() {
@@ -13,6 +14,8 @@ export default function Chat() {
     eligibleSchemes,
     missingInfo,
     isTyping,
+    selectedSchemeDetail,
+    closeSchemeDetail,
     addMessage,
     updateAPIResponse,
     setTyping,
@@ -44,7 +47,8 @@ export default function Chat() {
 
     try {
       const response = await chatService.sendChatMessage(text, {
-        signal: abortControllerRef.current.signal
+        signal: abortControllerRef.current.signal,
+        existing_profile: profileSummary
       });
 
       // 2. Extract agent reply content from structured reflection packet
@@ -139,6 +143,14 @@ export default function Chat() {
           missingInfo={missingInfo} 
         />
       </div>
+
+      {/* Slide-over details drawer panel */}
+      {selectedSchemeDetail && (
+        <SchemeDetailDrawer 
+          scheme={selectedSchemeDetail} 
+          onClose={closeSchemeDetail} 
+        />
+      )}
     </div>
   );
 }

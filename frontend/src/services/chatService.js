@@ -16,12 +16,13 @@ const chatService = {
    * @returns {Promise<Object>} The normalized response message.
    */
   sendChatMessage: async (messageText, options = {}) => {
-    const { sessionId, history, signal, timeout = 30000, ...restOptions } = options;
+    const { sessionId, history, signal, timeout = 30000, existing_profile, ...restOptions } = options;
     
     const payload = {
       message: messageText,
       ...(sessionId && { session_id: sessionId }),
       ...(history && { history }),
+      ...(existing_profile && { existing_profile }),
     };
 
     return api.post('/chat/', payload, {
