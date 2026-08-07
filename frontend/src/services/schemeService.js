@@ -89,7 +89,8 @@ const schemeService = {
    * @returns {Promise<Object>} Paginated normalized schemes.
    */
   getSchemes: async (params = {}, options = {}) => {
-    const rawData = await api.get('/schemes/', { params, ...options });
+    const queryParams = { limit: 100, ...params };
+    const rawData = await api.get('/schemes/', { params: queryParams, ...options });
     return normalizePaginatedSchemes(rawData);
   },
 

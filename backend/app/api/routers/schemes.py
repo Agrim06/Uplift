@@ -30,7 +30,8 @@ def load_schemes_from_json() -> List[Scheme]:
 @router.get("/", response_model=List[Scheme], summary="List all government schemes")
 async def get_schemes(
     state: str = Query(None, description="Filter schemes by state (case-insensitive)"),
-    limit: int = Query(10, description="Maximum number of schemes to return")
+    search: str = Query(None, description="Search keyword in scheme title, description, category, state, etc."),
+    limit: int = Query(100, description="Maximum number of schemes to return")
 ):
     schemes = load_schemes_from_json()
     
@@ -43,6 +44,16 @@ async def get_schemes(
             if s.state.lower() == "central" or s.state.lower() == state_lower
         ]
         
+    if search and search.strip():
+        q = search.strip().lower()
+        filtered = []
+        for s in schemes:
+            cat_str = " ".join(s.category).lower() if isinstance(s.category, list) else str(s.category).lower()
+            text_blob = f"{s.name} {s.description} {s.scheme_type} {s.target_group} {s.state} {s.occupation} {s.education_requirement} {s.benefits} {cat_str}".lower()
+            if q in text_blob:
+                filtered.append(s)
+        schemes = filtered
+
     return schemes[:limit]
 
 @router.get("/{scheme_id}", response_model=Scheme, summary="Get Specific scheme details")
