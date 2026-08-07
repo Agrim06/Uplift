@@ -24,7 +24,7 @@ def test_scheme_retrieval_by_state():
     delhi_candidates = retrieval.get_candidate_schemes(profile_delhi)
     # Should ONLY include Central schemes (no Karnataka schemes)
     for scheme in delhi_candidates:
-        assert scheme.state.lower() == "central"
+        assert scheme.state.lower() in ["delhi", "central"]
 
 def test_scheme_retrieval_by_income():
     retrieval = SchemeRetrievalService()

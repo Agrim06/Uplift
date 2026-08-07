@@ -33,7 +33,7 @@
       {
         "attribute": "education",
         "condition": "in",
-        "value": ["Undergraduate", "Postgraduate"],
+        "value": ["Undergraduate", "Postgraduate", "Engineering", "Diploma", "Class 10", "Class 11", "Class 12"],
         "description": "Must be pursuing a regular higher education degree course."
       },
       {
@@ -41,6 +41,203 @@
         "condition": "equals",
         "value": "Student",
         "description": "Must be currently studying as a regular student."
+      }
+    ]
+  },
+  {
+    "id": "SCH-CENTRAL-PMKISAN",
+    "name": "Pradhan Mantri Kisan Samman Nidhi (PM-KISAN)",
+    "description": "A Central Sector scheme to provide income support to all landholding farmers' families across the country to enable them to take care of expenses related to agriculture and domestic needs.",
+    "scheme_type": "Welfare / Income Support",
+    "target_group": "Farmers",
+    "age_limit": "18 - 75 years",
+    "income_limit": 600000.0,
+    "education_requirement": "No educational requirement",
+    "occupation": "Farmer",
+    "state": "Central",
+    "category": ["General", "OBC", "SC", "ST"],
+    "required_documents": [
+      "Aadhaar Card",
+      "Land Ownership Documents (Khasra/Khatauni)",
+      "Bank Account details (Aadhaar-seeded)",
+      "Citizenship proof"
+    ],
+    "benefits": "Financial benefit of Rs. 6,000 per year transferred in three equal installments of Rs. 2,000 directly into bank accounts.",
+    "application_link": "https://pmkisan.gov.in/",
+    "official_source": "https://agricoop.nic.in/",
+    "deadline": "2026-12-31",
+    "eligibility_rules": [
+      {
+        "attribute": "occupation",
+        "condition": "equals",
+        "value": "Farmer",
+        "description": "Must be a landholding farmer family."
+      }
+    ]
+  },
+  {
+    "id": "SCH-CENTRAL-PRAGATI",
+    "name": "AICTE Pragati Scholarship Scheme for Girl Students",
+    "description": "An initiative by AICTE to empower girl students by providing financial assistance to pursue technical education (Degree or Diploma) in recognized institutions.",
+    "scheme_type": "Scholarship",
+    "target_group": "Girl Students",
+    "age_limit": "No age limit",
+    "income_limit": 800000.0,
+    "education_requirement": "Admitted to 1st year of Degree/Diploma course or 2nd year via lateral entry",
+    "occupation": "Student",
+    "state": "Central",
+    "category": ["General", "OBC", "SC", "ST"],
+    "required_documents": [
+      "Class 10 and Class 12 Marksheets",
+      "Income Certificate",
+      "Admission Letter from College",
+      "Tuition Fee Receipt",
+      "Aadhaar Card",
+      "Bank Account Details",
+      "Declaration of single/two girl child status"
+    ],
+    "benefits": "Rs. 50,000 per annum for course duration as a lump sum amount for college fee, computer purchase, books, etc.",
+    "application_link": "https://scholarships.gov.in/",
+    "official_source": "https://www.aicte-india.org/",
+    "deadline": "2026-11-30",
+    "eligibility_rules": [
+      {
+        "attribute": "gender",
+        "condition": "equals",
+        "value": "Female",
+        "description": "Must be a female student."
+      },
+      {
+        "attribute": "income",
+        "condition": "lte",
+        "value": 800000.0,
+        "description": "Annual family income must not exceed Rs. 8,00,000."
+      },
+      {
+        "attribute": "occupation",
+        "condition": "equals",
+        "value": "Student",
+        "description": "Must be studying in an AICTE-approved institution."
+      }
+    ]
+  },
+  {
+    "id": "SCH-CENTRAL-MUDRA",
+    "name": "Pradhan Mantri MUDRA Yojana (PMMY)",
+    "description": "Provides micro-finance and collateral-free loans up to Rs. 10 Lakhs to non-corporate, non-farm small/micro enterprises and self-employed individuals.",
+    "scheme_type": "Business Loan / Micro-finance",
+    "target_group": "Entrepreneurs / Small Business",
+    "age_limit": "18 - 65 years",
+    "income_limit": 1000000.0,
+    "education_requirement": "No minimum education required",
+    "occupation": "Entrepreneur",
+    "state": "Central",
+    "category": ["General", "OBC", "SC", "ST"],
+    "required_documents": [
+      "Business Plan / Proposal",
+      "Proof of Identity (Aadhaar / Voter ID / PAN)",
+      "Proof of Residence",
+      "Bank Statement for last 6 months",
+      "Business License / Registration proof"
+    ],
+    "benefits": "Collateral-free business loans under 3 categories: Shishu (up to Rs. 50,000), Kishor (Rs. 50,000 - 5 Lakh), Tarun (Rs. 5 Lakh - 10 Lakh).",
+    "application_link": "https://www.mudra.org.in/",
+    "official_source": "https://financialservices.gov.in/",
+    "deadline": "2026-12-31",
+    "eligibility_rules": [
+      {
+        "attribute": "occupation",
+        "condition": "in",
+        "value": ["Entrepreneur", "Self-Employed", "Business Owner"],
+        "description": "Must be an entrepreneur or non-farm small business owner."
+      }
+    ]
+  },
+  {
+    "id": "SCH-MAH-LADKIBAHIN",
+    "name": "Mukhyamantri Majhi Ladki Bahin Yojana (Maharashtra)",
+    "description": "Provides monthly financial assistance to eligible women in Maharashtra to foster economic independence and self-reliance.",
+    "scheme_type": "Welfare / Monthly Stipend",
+    "target_group": "Women",
+    "age_limit": "21 - 65 years",
+    "income_limit": 250000.0,
+    "education_requirement": "No educational requirement",
+    "occupation": "Self-Employed",
+    "state": "Maharashtra",
+    "category": ["General", "OBC", "SC", "ST"],
+    "required_documents": [
+      "Aadhaar Card",
+      "Domicile Certificate of Maharashtra",
+      "Income Certificate (Yellow/Orange Ration Card)",
+      "Bank Account Passbook (Aadhaar linked)",
+      "Hamipatra (Affidavit)"
+    ],
+    "benefits": "Rs. 1,500 per month transferred directly to the woman beneficiary's bank account.",
+    "application_link": "https://ladakibahin.maharashtra.gov.in/",
+    "official_source": "https://maharashtra.gov.in/",
+    "deadline": "2026-12-31",
+    "eligibility_rules": [
+      {
+        "attribute": "state",
+        "condition": "equals",
+        "value": "Maharashtra",
+        "description": "Must be a resident of Maharashtra."
+      },
+      {
+        "attribute": "gender",
+        "condition": "equals",
+        "value": "Female",
+        "description": "Must be female."
+      },
+      {
+        "attribute": "income",
+        "condition": "lte",
+        "value": 250000.0,
+        "description": "Annual family income must not exceed Rs. 2,50,000."
+      }
+    ]
+  },
+  {
+    "id": "SCH-MAH-EBC-STUDENT",
+    "name": "Rajarshi Chhatrapati Shahu Maharaj Shikshan Shulkh Shishyavrutti Yojna (Maharashtra)",
+    "description": "Provides 50% tuition fee and exam fee reimbursement to economically backward class (EBC) students in Maharashtra pursuing professional and higher education.",
+    "scheme_type": "Scholarship",
+    "target_group": "EBC Students",
+    "age_limit": "17 - 30 years",
+    "income_limit": 800000.0,
+    "education_requirement": "Admitted through CAP round in Diploma/Degree/Postgraduate professional courses",
+    "occupation": "Student",
+    "state": "Maharashtra",
+    "category": ["General", "OBC"],
+    "required_documents": [
+      "Maharashtra Domicile Certificate",
+      "Family Income Certificate issued by Tahsildar",
+      "CAP Allotment Letter",
+      "Class 10 and 12 Marksheets",
+      "Aadhaar Card linked to Bank Account"
+    ],
+    "benefits": "50% reimbursement of tuition fees and examination fees.",
+    "application_link": "https://mahadbt.maharashtra.gov.in/",
+    "official_source": "https://dtemaharashtra.gov.in/",
+    "deadline": "2026-03-31",
+    "eligibility_rules": [
+      {
+        "attribute": "state",
+        "condition": "equals",
+        "value": "Maharashtra",
+        "description": "Must be a permanent resident of Maharashtra."
+      },
+      {
+        "attribute": "income",
+        "condition": "lte",
+        "value": 800000.0,
+        "description": "Annual family income must not exceed Rs. 8,00,000."
+      },
+      {
+        "attribute": "occupation",
+        "condition": "equals",
+        "value": "Student",
+        "description": "Must be currently enrolled in higher education in Maharashtra."
       }
     ]
   },
@@ -95,99 +292,9 @@
     ]
   },
   {
-    "id": "SCH-CENTRAL-PRAGATI",
-    "name": "AICTE Pragati Scholarship Scheme for Girl Students",
-    "description": "An initiative by AICTE to support girl students pursuing technical education (Degree or Diploma) in recognized institutions.",
-    "scheme_type": "Scholarship",
-    "target_group": "Girl Students",
-    "age_limit": "No age limit",
-    "income_limit": 800000.0,
-    "education_requirement": "Admitted to 1st year of Degree/Diploma course or 2nd year via lateral entry",
-    "occupation": "Student",
-    "state": "Central",
-    "category": ["General", "OBC", "SC", "ST"],
-    "required_documents": [
-      "Class 10 and Class 12 Marksheets",
-      "Income Certificate",
-      "Admission Letter from College",
-      "Tuition Fee Receipt",
-      "Aadhaar Card",
-      "Bank Account Details",
-      "Declaration of single/two girl child status"
-    ],
-    "benefits": "Rs. 50,000 per annum for course duration as a lump sum amount for college fee, computer purchase, books, etc.",
-    "application_link": "https://scholarships.gov.in/",
-    "official_source": "https://www.aicte-india.org/",
-    "deadline": "2026-11-30",
-    "eligibility_rules": [
-      {
-        "attribute": "gender",
-        "condition": "equals",
-        "value": "Female",
-        "description": "Must be a female student."
-      },
-      {
-        "attribute": "income",
-        "condition": "lte",
-        "value": 800000.0,
-        "description": "Annual family income must not exceed Rs. 8,00,000."
-      },
-      {
-        "attribute": "occupation",
-        "condition": "equals",
-        "value": "Student",
-        "description": "Must be studying in an AICTE-approved institution."
-      }
-    ]
-  },
-  {
-    "id": "SCH-CENTRAL-NMMSS",
-    "name": "National Means-cum-Merit Scholarship Scheme (NMMSS)",
-    "description": "Scholarships to meritorious students of economically weaker sections to prevent them from dropping out at Class 8 and encourage them to continue secondary education.",
-    "scheme_type": "Scholarship",
-    "target_group": "School Students",
-    "age_limit": "12 - 16 years",
-    "income_limit": 350000.0,
-    "education_requirement": "Studying in Class 9, scored minimum 55% (50% for SC/ST) in Class 8",
-    "occupation": "Student",
-    "state": "Central",
-    "category": ["General", "OBC", "SC", "ST"],
-    "required_documents": [
-      "Class 8 Marksheet",
-      "Income Certificate",
-      "Caste Certificate (if applicable)",
-      "Aadhaar Card",
-      "Bank Account details"
-    ],
-    "benefits": "Rs. 12,000 per annum (Rs. 1,000 per month) from Class 9 to Class 12.",
-    "application_link": "https://scholarships.gov.in/",
-    "official_source": "https://www.education.gov.in/",
-    "deadline": "2026-12-31",
-    "eligibility_rules": [
-      {
-        "attribute": "income",
-        "condition": "lte",
-        "value": 350000.0,
-        "description": "Annual family income must not exceed Rs. 3,50,000."
-      },
-      {
-        "attribute": "education",
-        "condition": "equals",
-        "value": "Class 9",
-        "description": "Must be currently studying in Class 9 in a government/local body school."
-      },
-      {
-        "attribute": "occupation",
-        "condition": "equals",
-        "value": "Student",
-        "description": "Must be a regular student."
-      }
-    ]
-  },
-  {
     "id": "SCH-KAR-PM-OBC",
     "name": "Post Matric Scholarship for OBC Students (Karnataka)",
-    "description": "Provides tuition fee concession and maintenance allowance to OBC category students (Cat-1, 2A, 3A, 3B) in Karnataka pursuing post-matric courses.",
+    "description": "Provides tuition fee concession and maintenance allowance to OBC category students in Karnataka pursuing post-matric courses.",
     "scheme_type": "Scholarship",
     "target_group": "OBC Students",
     "age_limit": "No age limit",
@@ -217,19 +324,270 @@
         "attribute": "category",
         "condition": "equals",
         "value": "OBC",
-        "description": "Must belong to OBC category (Category 1, 2A, 3A, 3B)."
+        "description": "Must belong to OBC category."
       },
       {
         "attribute": "income",
         "condition": "lte",
         "value": 250000.0,
-        "description": "Annual family income must not exceed Rs. 2,50,000 for Cat-1 (Rs. 1,00,000 for other sub-casts)."
+        "description": "Annual family income must not exceed Rs. 2,50,000."
       },
       {
         "attribute": "occupation",
         "condition": "equals",
         "value": "Student",
         "description": "Must be currently studying in a post-matric course."
+      }
+    ]
+  },
+  {
+    "id": "SCH-DELHI-LADLI",
+    "name": "Delhi Ladli Scheme",
+    "description": "Financial assistance scheme to promote education and welfare of girl children born in Delhi.",
+    "scheme_type": "Girl Child Welfare",
+    "target_group": "Girl Child / Students",
+    "age_limit": "0 - 18 years",
+    "income_limit": 100000.0,
+    "education_requirement": "Enrolled in recognized school in Delhi",
+    "occupation": "Student",
+    "state": "Delhi",
+    "category": ["General", "OBC", "SC", "ST"],
+    "required_documents": [
+      "Birth Certificate of Girl Child",
+      "3 Years Delhi Residence Proof",
+      "Income Certificate of Parents",
+      "School Bonafide Certificate",
+      "Aadhaar Card"
+    ],
+    "benefits": "Financial deposit up to Rs. 1,00,000 accumulated upon reaching 18 years of age and passing Class 10/12.",
+    "application_link": "https://edistrict.delhigovt.nic.in/",
+    "official_source": "https://wcd.delhi.gov.in/",
+    "deadline": "2026-12-31",
+    "eligibility_rules": [
+      {
+        "attribute": "state",
+        "condition": "equals",
+        "value": "Delhi",
+        "description": "Must be a resident of Delhi."
+      },
+      {
+        "attribute": "gender",
+        "condition": "equals",
+        "value": "Female",
+        "description": "Must be a girl child."
+      },
+      {
+        "attribute": "income",
+        "condition": "lte",
+        "value": 100000.0,
+        "description": "Family income must not exceed Rs. 1,00,000 per year."
+      }
+    ]
+  },
+  {
+    "id": "SCH-UP-POSTMATRIC",
+    "name": "UP Post Matric Scholarship Scheme (Uttar Pradesh)",
+    "description": "Scholarship and fee reimbursement scheme for General, OBC, SC, ST, and Minority students in Uttar Pradesh pursuing post-matric courses.",
+    "scheme_type": "Scholarship",
+    "target_group": "Students in UP",
+    "age_limit": "No age limit",
+    "income_limit": 250000.0,
+    "education_requirement": "Enrolled in Class 11, 12, Diploma, Graduation, or PG in UP",
+    "occupation": "Student",
+    "state": "Uttar Pradesh",
+    "category": ["General", "OBC", "SC", "ST"],
+    "required_documents": [
+      "Income Certificate verified on UP Portal",
+      "Caste Certificate (if applicable)",
+      "Class 10 and 12 Marksheet",
+      "College Registration Number",
+      "Bank Passbook linked to Aadhaar"
+    ],
+    "benefits": "100% Tuition Fee Reimbursement + Monthly Maintenance Allowance.",
+    "application_link": "https://scholarship.up.gov.in/",
+    "official_source": "https://up.gov.in/",
+    "deadline": "2026-02-28",
+    "eligibility_rules": [
+      {
+        "attribute": "state",
+        "condition": "equals",
+        "value": "Uttar Pradesh",
+        "description": "Must be a resident of Uttar Pradesh."
+      },
+      {
+        "attribute": "income",
+        "condition": "lte",
+        "value": 250000.0,
+        "description": "Annual family income must not exceed Rs. 2,50,000."
+      },
+      {
+        "attribute": "occupation",
+        "condition": "equals",
+        "value": "Student",
+        "description": "Must be pursuing post-matric studies in UP."
+      }
+    ]
+  },
+  {
+    "id": "SCH-GUJ-MYSY",
+    "name": "Mukhyamantri Yuva Swavalamban Yojana - MYSY (Gujarat)",
+    "description": "Financial assistance to bright students from Gujarat pursuing Higher Education courses like Engineering, Pharmacy, Medical, Diploma, etc.",
+    "scheme_type": "Scholarship",
+    "target_group": "Meritorious Students",
+    "age_limit": "17 - 25 years",
+    "income_limit": 600000.0,
+    "education_requirement": "Scored 80% or above in Class 10/12 and pursuing Higher Education",
+    "occupation": "Student",
+    "state": "Gujarat",
+    "category": ["General", "OBC", "SC", "ST"],
+    "required_documents": [
+      "Gujarat Domicile Certificate",
+      "Class 10/12 Marksheet with 80%+",
+      "Income Certificate from Mamlatdar/Tahsildar",
+      "College Admission Fee Receipt",
+      "Hostel Fee Receipt (if staying in hostel)",
+      "Bank Account details"
+    ],
+    "benefits": "50% of tuition fee (up to Rs. 2,00,000 for MBBS, Rs. 50,000 for Engg), plus Rs. 12,000/yr hostel allowance.",
+    "application_link": "https://mysy.guj.nic.in/",
+    "official_source": "https://gujaratindia.gov.in/",
+    "deadline": "2026-12-31",
+    "eligibility_rules": [
+      {
+        "attribute": "state",
+        "condition": "equals",
+        "value": "Gujarat",
+        "description": "Must be a resident of Gujarat."
+      },
+      {
+        "attribute": "income",
+        "condition": "lte",
+        "value": 600000.0,
+        "description": "Annual family income must not exceed Rs. 6,00,000."
+      },
+      {
+        "attribute": "occupation",
+        "condition": "equals",
+        "value": "Student",
+        "description": "Must be studying in higher education in Gujarat."
+      }
+    ]
+  },
+  {
+    "id": "SCH-CENTRAL-VISHWAKARMA",
+    "name": "PM Vishwakarma Scheme",
+    "description": "End-to-end holistic support to traditional artisans and craftspeople engaged in 18 traditional trades like carpenters, blacksmiths, goldsmiths, potters, etc.",
+    "scheme_type": "Skill & Collateral-Free Credit",
+    "target_group": "Artisans / Craftspeople",
+    "age_limit": "18 - 70 years",
+    "income_limit": 500000.0,
+    "education_requirement": "No educational bar",
+    "occupation": "Artisan",
+    "state": "Central",
+    "category": ["General", "OBC", "SC", "ST"],
+    "required_documents": [
+      "Aadhaar Card",
+      "Bank Account details",
+      "Ration Card",
+      "Proof of trade practice"
+    ],
+    "benefits": "PM Vishwakarma Certificate & ID, Basic Training stipend (Rs. 500/day), Toolkit Incentive of Rs. 15,000, and collateral-free credit up to Rs. 3 Lakh at 5% interest.",
+    "application_link": "https://pmvishwakarma.gov.in/",
+    "official_source": "https://msme.gov.in/",
+    "deadline": "2026-12-31",
+    "eligibility_rules": [
+      {
+        "attribute": "occupation",
+        "condition": "in",
+        "value": ["Artisan", "Craftsperson", "Carpenter", "Blacksmith", "Potter", "Weaver"],
+        "description": "Must be engaged in one of 18 traditional family-based trades."
+      }
+    ]
+  },
+  {
+    "id": "SCH-TN-MAGALIRURIMAI",
+    "name": "Kalaignar Magalir Urimai Thogai Scheme (Tamil Nadu)",
+    "description": "Provides monthly basic income support to women heads of eligible households across Tamil Nadu.",
+    "scheme_type": "Welfare / Cash Transfer",
+    "target_group": "Women",
+    "age_limit": "21 - 65 years",
+    "income_limit": 250000.0,
+    "education_requirement": "No educational bar",
+    "occupation": "Self-Employed",
+    "state": "Tamil Nadu",
+    "category": ["General", "OBC", "SC", "ST"],
+    "required_documents": [
+      "Smart Family Card (Ration Card)",
+      "Aadhaar Card",
+      "Electricity Consumption Bill",
+      "Bank Passbook linked to Aadhaar"
+    ],
+    "benefits": "Direct monthly cash benefit of Rs. 1,000 credited to the woman's bank account.",
+    "application_link": "https://kmut.tn.gov.in/",
+    "official_source": "https://tn.gov.in/",
+    "deadline": "2026-12-31",
+    "eligibility_rules": [
+      {
+        "attribute": "state",
+        "condition": "equals",
+        "value": "Tamil Nadu",
+        "description": "Must be a resident of Tamil Nadu."
+      },
+      {
+        "attribute": "gender",
+        "condition": "equals",
+        "value": "Female",
+        "description": "Must be female."
+      },
+      {
+        "attribute": "income",
+        "condition": "lte",
+        "value": 250000.0,
+        "description": "Annual family income must be less than Rs. 2,50,000."
+      }
+    ]
+  },
+  {
+    "id": "SCH-CENTRAL-YASASVI",
+    "name": "PM Young Achievers Scholarship Award Scheme for Vibrant India (PM-YASASVI)",
+    "description": "Top Class School and College Education Scholarship for OBC, EBC, and DNT students.",
+    "scheme_type": "Scholarship",
+    "target_group": "OBC / EBC Students",
+    "age_limit": "13 - 22 years",
+    "income_limit": 250000.0,
+    "education_requirement": "Studying in Class 9 to Class 12 or Top Class College",
+    "occupation": "Student",
+    "state": "Central",
+    "category": ["OBC"],
+    "required_documents": [
+      "OBC / EBC / DNT Certificate",
+      "Annual Income Certificate below 2.5L",
+      "Marksheet of previous class",
+      "Aadhaar Card",
+      "Bank details"
+    ],
+    "benefits": "Rs. 75,000/yr for Class 9-10; Rs. 1,25,000/yr for Class 11-12.",
+    "application_link": "https://yet.nta.ac.in/",
+    "official_source": "https://socialjustice.gov.in/",
+    "deadline": "2026-11-30",
+    "eligibility_rules": [
+      {
+        "attribute": "category",
+        "condition": "in",
+        "value": ["OBC", "EBC", "DNT"],
+        "description": "Must belong to OBC, EBC, or DNT categories."
+      },
+      {
+        "attribute": "income",
+        "condition": "lte",
+        "value": 250000.0,
+        "description": "Annual family income must not exceed Rs. 2,50,000."
+      },
+      {
+        "attribute": "occupation",
+        "condition": "equals",
+        "value": "Student",
+        "description": "Must be a regular student."
       }
     ]
   },
@@ -269,6 +627,38 @@
         "condition": "equals",
         "value": "Student",
         "description": "Must be pursuing a post-matric course."
+      }
+    ]
+  },
+  {
+    "id": "SCH-CENTRAL-STANDUP",
+    "name": "Stand-Up India Scheme for SC/ST and Women Entrepreneurs",
+    "description": "Facilitates bank loans between Rs. 10 Lakhs and Rs. 1 Crore to at least one SC or ST borrower and at least one woman borrower per bank branch for setting up a greenfield enterprise.",
+    "scheme_type": "Business Loan",
+    "target_group": "Women & SC/ST Entrepreneurs",
+    "age_limit": "18 - 65 years",
+    "income_limit": 1500000.0,
+    "education_requirement": "No educational bar",
+    "occupation": "Entrepreneur",
+    "state": "Central",
+    "category": ["SC", "ST", "General", "OBC"],
+    "required_documents": [
+      "Project Report for Greenfield Enterprise",
+      "Aadhaar Card and PAN Card",
+      "Caste Certificate (if SC/ST)",
+      "Business Site / Premises Proof",
+      "Bank Statements"
+    ],
+    "benefits": "Bank loans from Rs. 10 Lakh to Rs. 1 Crore covering up to 75% of project cost with reduced margin money.",
+    "application_link": "https://www.standupmitra.in/",
+    "official_source": "https://financialservices.gov.in/",
+    "deadline": "2026-12-31",
+    "eligibility_rules": [
+      {
+        "attribute": "occupation",
+        "condition": "in",
+        "value": ["Entrepreneur", "Self-Employed", "Business Owner"],
+        "description": "Must be setting up a new (greenfield) enterprise in manufacturing, services, or trading."
       }
     ]
   }

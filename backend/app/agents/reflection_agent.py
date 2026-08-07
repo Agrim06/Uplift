@@ -69,11 +69,12 @@ class ReflectionAgent:
                 - Current Verified Profile: {profile.model_dump()}
                 - Matching Eligible Schemes: {[s.name for s in eligible_schemes]}
                 - Missing Profile Requirements: {missing_info}
+                - Next Missing Attribute Needed: {missing_info[0] if missing_info else 'None'}
                 - Profile Conflicts: {conflicts}
                 
                 Formulate a short, conversational response (2-3 sentences max) to guide the user:
+                - If profile attributes are missing, focus on asking for the NEXT missing attribute: "{missing_info[0] if missing_info else ''}" (remind them they can select one of the choices below).
                 - If they have matching schemes, congratulate them and mention the best scheme names.
-                - If profile attributes are missing, politely ask them to clarify (remind them they can use the clickable options below).
                 - If conflicts exist, ask for clarification.
                 - Be warm, encouraging, and clear. Do not make up any other scheme details.
                 
@@ -90,8 +91,8 @@ class ReflectionAgent:
             if conflicts:
                 agent_reply = f"I noticed some inconsistencies in your profile details: {'; '.join(conflicts)}. Could you please clarify?"
             elif missing_info:
-                fields_str = ", ".join([f.replace('_', ' ') for f in missing_info])
-                agent_reply = f"I have registered your details! To verify your eligibility for scholarships or grants, could you please provide your: {fields_str}? You can select one of the choices below."
+                first_missing = missing_info[0].replace('_', ' ')
+                agent_reply = f"I have registered your details! To help match you with eligible schemes, could you please tell me your {first_missing}? You can select one of the choices below."
             elif eligible_schemes:
                 schemes_str = ", ".join([s.name for s in eligible_schemes[:2]])
                 agent_reply = f"Great news! Based on your profile, you may qualify for {schemes_str} and {len(eligible_schemes) - 2} other schemes. Check them out on the right-hand dashboard!"

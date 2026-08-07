@@ -152,26 +152,51 @@ class ProfileExtractionEngine:
             result["occupation"] = "Student"
         elif "farmer" in query_lower:
             result["occupation"] = "Farmer"
+        elif "entrepreneur" in query_lower or "business" in query_lower:
+            result["occupation"] = "Entrepreneur"
+        elif "artisan" in query_lower or "craftsperson" in query_lower:
+            result["occupation"] = "Artisan"
+        elif "self-employed" in query_lower or "freelancer" in query_lower:
+            result["occupation"] = "Self-Employed"
             
         if "engineering" in query_lower:
             result["education"] = "Engineering"
-        elif "class 10" in query_lower or "10th" in query_lower:
+        elif "postgraduate" in query_lower or "pg" in query_lower or "master" in query_lower:
+            result["education"] = "Postgraduate"
+        elif "undergraduate" in query_lower or "ug" in query_lower or "bachelor" in query_lower or "degree" in query_lower or "graduation" in query_lower:
+            result["education"] = "Undergraduate"
+        elif "class 12" in query_lower or "12th" in query_lower or "higher secondary" in query_lower:
+            result["education"] = "Class 12"
+        elif "class 10" in query_lower or "10th" in query_lower or "sslc" in query_lower or "matric" in query_lower:
             result["education"] = "Class 10"
+        elif "diploma" in query_lower:
+            result["education"] = "Diploma"
             
-        income_match = re.search(r'\b(\d+(?:\.\d+)?)\s*(?:lakh|l)\b', query_lower)
+        query_clean = query_lower.replace(',', '')
+        income_match = re.search(r'\b(\d+(?:\.\d+)?)\s*(?:lakh|lakhs|l)\b', query_clean)
         if income_match:
             result["income"] = float(income_match.group(1)) * 100000.0
         else:
-            income_match = re.search(r'\bincome\s*(?:of|is)?\s*(\d+)\b', query_lower)
+            income_match = re.search(r'\b(\d+(?:\.\d+)?)\s*k\b', query_clean)
             if income_match:
-                result["income"] = float(income_match.group(1))
+                result["income"] = float(income_match.group(1)) * 1000.0
+            else:
+                income_match = re.search(r'\bincome\b[^\d]*(\d+)', query_clean)
+                if income_match:
+                    result["income"] = float(income_match.group(1))
+                else:
+                    income_match = re.search(r'\b(\d{4,8})\b', query_clean)
+                    if income_match:
+                        result["income"] = float(income_match.group(1))
         
         if re.search(r'\bfemale\b|\bgirl\b|\bwoman\b', query_lower):
             result["gender"] = "Female"
         elif re.search(r'\bmale\b|\bboy\b|\bman\b', query_lower):
             result["gender"] = "Male"
-        elif re.search(r'\bother\b', query_lower):
-            result["gender"] = "Other"
+        elif re.search(r'\btransgender\b|\btrans\b', query_lower):
+            result["gender"] = "Transgender"
+        elif "prefer not to say" in query_lower:
+            result["gender"] = "Prefer not to say"
 
         if re.search(r'\bsc\b', query_lower):
             result["category"] = "SC"
@@ -179,6 +204,6 @@ class ProfileExtractionEngine:
             result["category"] = "ST"
         elif re.search(r'\bobc\b', query_lower):
             result["category"] = "OBC"
-        elif re.search(r'\bgeneral\b', query_lower):
+        elif re.search(r'\bgeneral\b|\bgen\b', query_lower):
             result["category"] = "General"
         return result
