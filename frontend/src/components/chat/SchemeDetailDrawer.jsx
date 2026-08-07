@@ -1,8 +1,10 @@
 import React from 'react';
-import { FiX, FiFileText, FiAward, FiInfo, FiLayers, FiCalendar } from 'react-icons/fi';
+import { FiX, FiFileText, FiAward, FiInfo, FiLayers, FiCalendar, FiExternalLink } from 'react-icons/fi';
 
 export default function SchemeDetailDrawer({ scheme, onClose }) {
   if (!scheme) return null;
+
+  const applyUrl = scheme.application_link || scheme.applicationUrl || scheme.applicationLink || scheme.official_source;
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
@@ -19,7 +21,7 @@ export default function SchemeDetailDrawer({ scheme, onClose }) {
         <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
           <div className="space-y-0.5 max-w-[85%]">
             <span className="text-[10px] text-blue-600 font-extrabold uppercase tracking-wider">
-              {scheme.ministry || "Ministry of Welfare"}
+              {scheme.ministry || scheme.scheme_type || "Government Scheme"}
             </span>
             <h2 className="text-base font-extrabold text-gray-800 leading-tight truncate">
               {scheme.title || scheme.name}
@@ -28,88 +30,78 @@ export default function SchemeDetailDrawer({ scheme, onClose }) {
           <button 
             type="button"
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-xl transition text-gray-400 hover:text-gray-600 cursor-pointer"
+            className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition cursor-pointer"
           >
-            <FiX className="w-5 h-5" />
+            <FiX className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Content body */}
-        <div className="flex-1 overflow-y-auto p-5 space-y-5 text-xs leading-relaxed text-gray-650">
+        {/* Scrollable details view */}
+        <div className="flex-1 overflow-y-auto p-5 space-y-6 text-xs text-gray-700">
           
-          {/* Description */}
-          <div className="space-y-1.5">
-            <div className="flex items-center space-x-2 text-gray-800 font-bold">
-              <FiInfo className="w-4 h-4 text-blue-500" />
-              <span>Description</span>
+          {/* Objective Summary */}
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2 text-gray-850 font-bold">
+              <FiInfo className="w-4 h-4 text-blue-600" />
+              <span>Objective</span>
             </div>
-            <p className="text-gray-500 pl-6 leading-relaxed">{scheme.description}</p>
+            <p className="leading-relaxed text-gray-600 pl-6">
+              {scheme.description}
+            </p>
           </div>
 
-          {/* Benefits */}
-          <div className="space-y-1.5">
-            <div className="flex items-center space-x-2 text-gray-800 font-bold">
+          {/* Key Benefits */}
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2 text-gray-850 font-bold">
               <FiAward className="w-4 h-4 text-green-600" />
-              <span>Key Benefits</span>
+              <span>Benefits Offered</span>
             </div>
-            <div className="pl-6">
-              <p className="p-3 bg-green-50/20 border border-green-150/40 text-green-950 rounded-2xl font-semibold">
-                {scheme.benefits || "Details of monetary/non-monetary benefits."}
-              </p>
+            <div className="p-3 bg-green-50/40 border border-green-150/50 rounded-xl text-green-950 font-semibold leading-relaxed ml-6">
+              {scheme.benefits || "Monetary and non-monetary assistance provided."}
             </div>
           </div>
 
-          {/* Eligibility Requirements */}
-          <div className="space-y-1.5">
-            <div className="flex items-center space-x-2 text-gray-800 font-bold">
-              <FiLayers className="w-4 h-4 text-purple-600" />
-              <span>Eligibility Requirements</span>
-            </div>
-            <div className="pl-6">
-              <div className="p-3 bg-gray-50 border border-gray-100 rounded-2xl space-y-2 text-[11px]">
-                <div className="flex justify-between border-b border-gray-100/50 pb-1.5">
-                  <span className="text-gray-455 font-semibold">State</span>
-                  <span className="font-extrabold text-gray-700 capitalize">{scheme.eligibility?.state || scheme.state || "Central"}</span>
-                </div>
-                <div className="flex justify-between border-b border-gray-100/50 pb-1.5">
-                  <span className="text-gray-455 font-semibold">Gender</span>
-                  <span className="font-extrabold text-gray-700">{scheme.eligibility?.gender || 'All'}</span>
-                </div>
-                {(scheme.eligibility?.minAge || scheme.eligibility?.maxAge) && (
-                  <div className="flex justify-between border-b border-gray-100/50 pb-1.5">
-                    <span className="text-gray-455 font-semibold">Age Bracket</span>
-                    <span className="font-extrabold text-gray-700">
-                      {scheme.eligibility.minAge || 0} - {scheme.eligibility.maxAge || 'No limit'} years
-                    </span>
-                  </div>
-                )}
-                {scheme.eligibility?.incomeLimit && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-455 font-semibold">Max Income Limit</span>
-                    <span className="font-extrabold text-gray-700">₹{scheme.eligibility.incomeLimit.toLocaleString()} / year</span>
+          {/* Eligibility Rules Checklist */}
+          {((scheme.eligibility_rules && scheme.eligibility_rules.length > 0) || scheme.eligibility) && (
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2 text-gray-850 font-bold">
+                <FiLayers className="w-4 h-4 text-purple-600" />
+                <span>Eligibility Criteria</span>
+              </div>
+              <div className="ml-6 space-y-2">
+                {scheme.eligibility_rules ? (
+                  scheme.eligibility_rules.map((rule, idx) => (
+                    <div key={idx} className="p-2.5 bg-gray-50 border border-gray-100 rounded-xl flex items-start space-x-2 text-gray-700">
+                      <span className="w-1.5 h-1.5 bg-purple-500 rounded-full mt-1.5 flex-shrink-0" />
+                      <span className="font-medium text-xs leading-relaxed">{rule.description}</span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs space-y-1">
+                    <p>State: <strong>{scheme.eligibility?.state}</strong></p>
+                    <p>Gender: <strong>{scheme.eligibility?.gender}</strong></p>
+                    {scheme.eligibility?.incomeLimit && <p>Max Income: <strong>₹{scheme.eligibility.incomeLimit}</strong></p>}
                   </div>
                 )}
               </div>
             </div>
-          </div>
+          )}
 
-          {/* Documents checklist */}
-          {scheme.documentsRequired?.length > 0 && (
-            <div className="space-y-1.5">
-              <div className="flex items-center space-x-2 text-gray-800 font-bold">
-                <FiFileText className="w-4 h-4 text-blue-500" />
-                <span>Documents Needed</span>
+          {/* Documents Needed */}
+          {((scheme.required_documents && scheme.required_documents.length > 0) || (scheme.documentsRequired && scheme.documentsRequired.length > 0)) && (
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2 text-gray-850 font-bold">
+                <FiFileText className="w-4 h-4 text-amber-500" />
+                <span>Required Documents</span>
               </div>
-              <div className="pl-6">
-                <ul className="space-y-1.5">
-                  {scheme.documentsRequired.map((doc, idx) => (
-                    <li key={idx} className="flex items-center space-x-2 text-[11px] font-semibold text-gray-750">
-                      <div className="w-1.5 h-1.5 bg-blue-500 rounded-full flex-shrink-0" />
-                      <span>{doc}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <ul className="ml-6 space-y-1.5">
+                {(scheme.required_documents || scheme.documentsRequired).map((doc, idx) => (
+                  <li key={idx} className="flex items-center space-x-2 text-xs font-medium text-gray-700">
+                    <span className="w-1.5 h-1.5 bg-amber-500 rounded-full flex-shrink-0" />
+                    <span>{doc}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
 
@@ -126,15 +118,16 @@ export default function SchemeDetailDrawer({ scheme, onClose }) {
         </div>
 
         {/* Submit apply action */}
-        {scheme.applicationUrl && (
+        {applyUrl && (
           <div className="p-4 border-t border-gray-100 bg-gray-50/50 flex-shrink-0">
             <a
-              href={scheme.applicationUrl}
+              href={applyUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="block text-center w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition shadow-sm cursor-pointer"
+              className="flex items-center justify-center space-x-2 text-center w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition shadow-md hover:shadow-lg cursor-pointer text-sm"
             >
-              Apply Online
+              <span>Apply Directly Online</span>
+              <FiExternalLink className="w-4 h-4" />
             </a>
           </div>
         )}

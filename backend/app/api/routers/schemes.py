@@ -52,3 +52,17 @@ async def get_scheme_by_id(scheme_id: str):
         if s.id.lower() == scheme_id.lower():
             return s
     raise HTTPException(status_code=404, detail=f"Scheme with ID '{scheme_id}' not found.")
+
+from pydantic import BaseModel
+
+class ScrapeRequest(BaseModel):
+    url: str
+
+@router.post("/scrape", response_model=Scheme, summary="Web scrape and ingest scheme from URL")
+async def scrape_scheme_endpoint(request: ScrapeRequest):
+    try:
+        from app.services.scheme_scraper import SchemeScraperService
+        scheme = await SchemeScraperService.scrape_and_ingest(request.url)
+        return scheme
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Web scraping failed: {str(e)}")

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import schemeService from '../services/schemeService';
-import { FiSearch, FiSliders, FiFileText } from 'react-icons/fi';
+import { FiSearch, FiSliders, FiFileText, FiExternalLink } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 
 export default function Explorer() {
@@ -168,6 +168,20 @@ export default function Explorer() {
                       </li>
                     ))}
                   </ul>
+                </div>
+              )}
+
+              {(selectedScheme.application_link || selectedScheme.official_source || selectedScheme.applicationUrl) && (
+                <div className="pt-2">
+                  <a
+                    href={selectedScheme.application_link || selectedScheme.official_source || selectedScheme.applicationUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center space-x-2 text-center w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs transition shadow-sm cursor-pointer"
+                  >
+                    <span>Apply Directly Online</span>
+                    <FiExternalLink className="w-3.5 h-3.5" />
+                  </a>
                 </div>
               )}
             </div>
