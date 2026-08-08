@@ -77,3 +77,17 @@ async def scrape_scheme_endpoint(request: ScrapeRequest):
         return scheme
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Web scraping failed: {str(e)}")
+
+from fastapi import UploadFile, File
+
+@router.post("/ingest-pdf", response_model=Scheme, summary="Ingest government scheme from uploaded PDF document")
+async def ingest_pdf_endpoint(file: UploadFile = File(...)):
+    if not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files (.pdf) are supported.")
+    try:
+        from app.services.pdf_ingestion_service import PDFIngestionService
+        contents = await file.read()
+        scheme = await PDFIngestionService.ingest_pdf_bytes(contents, filename=file.filename)
+        return scheme
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"PDF ingestion failed: {str(e)}")

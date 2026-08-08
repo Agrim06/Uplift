@@ -94,9 +94,26 @@ class SchemeScraperService:
         return scheme_data
 
     @classmethod
-    async def save_scheme_to_database(cls, scheme_dict: Dict[str, Any]) -> Scheme:
-        # Validate against Pydantic model
-        validated_scheme = Scheme(**scheme_dict)
+    async def save_scheme_to_database(cls, scheme_input: Any) -> Any:
+        # Handle dict, list, or envelope {"schemes": [...]}
+        items_to_save = []
+        if isinstance(scheme_input, list):
+            items_to_save = scheme_input
+        elif isinstance(scheme_input, dict):
+            if "schemes" in scheme_input and isinstance(scheme_input["schemes"], list):
+                items_to_save = scheme_input["schemes"]
+            else:
+                items_to_save = [scheme_input]
+
+        validated_schemes = []
+        for item in items_to_save:
+            try:
+                validated_schemes.append(Scheme(**item))
+            except Exception as e:
+                print(f"Skipping invalid scheme item: {e}")
+
+        if not validated_schemes:
+            raise ValueError("No valid scheme items could be parsed from input.")
 
         # Load existing database file
         existing_schemes = []
@@ -107,25 +124,27 @@ class SchemeScraperService:
                 except Exception:
                     existing_schemes = []
 
-        # Check for duplicate by ID or Name
-        updated = False
-        for idx, item in enumerate(existing_schemes):
-            if item.get("id") == validated_scheme.id or item.get("name").strip().lower() == validated_scheme.name.strip().lower():
-                existing_schemes[idx] = validated_scheme.model_dump()
-                updated = True
-                break
+        saved_list = []
+        for validated_scheme in validated_schemes:
+            updated = False
+            for idx, item in enumerate(existing_schemes):
+                if item.get("id") == validated_scheme.id or item.get("name").strip().lower() == validated_scheme.name.strip().lower():
+                    existing_schemes[idx] = validated_scheme.model_dump()
+                    updated = True
+                    break
 
-        if not updated:
-            existing_schemes.append(validated_scheme.model_dump())
+            if not updated:
+                existing_schemes.append(validated_scheme.model_dump())
+            saved_list.append(validated_scheme)
 
         # Save back to schemes.json
         with open(SCHEMES_FILE_PATH, "w", encoding="utf-8") as f:
             json.dump(existing_schemes, f, indent=2, ensure_ascii=False)
 
-        return validated_scheme
+        return saved_list[0] if len(saved_list) == 1 else saved_list
 
     @classmethod
-    async def scrape_and_ingest(cls, url: str) -> Scheme:
+    async def scrape_and_ingest(cls, url: str) -> Any:
         """Full pipeline: Scrapes URL -> AI Structures -> Saves to database."""
         scheme_dict = await cls.scrape_and_structure_scheme(url)
         saved_scheme = await cls.save_scheme_to_database(scheme_dict)
