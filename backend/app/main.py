@@ -7,12 +7,18 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-from app.api.routers import chat, health, schemes
+from app.api.routers import chat, health, schemes, rag
 from app.config.errors import setup_exception_handlers
+from app.rag.retriever import RAGRetriever
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("Starting up Uplift backend...")
+    print("Starting up Uplift RAG backend...")
+    try:
+        retriever = RAGRetriever()
+        print(f"RAG Vector Store ready with {len(retriever.vector_store.schemes)} schemes indexed.")
+    except Exception as e:
+        print(f"RAG initialization error: {e}")
     yield
     print("Shutting down...")
 
@@ -40,3 +46,4 @@ setup_exception_handlers(app)
 app.include_router(health.router, prefix="/api/v1", tags=["System"])
 app.include_router(chat.router, prefix="/api/v1/chat", tags=["Agent Workflow"])
 app.include_router(schemes.router, prefix="/api/v1/schemes", tags=["Schemes Data"])
+app.include_router(rag.router, prefix="/api/v1/rag", tags=["RAG Engine"])

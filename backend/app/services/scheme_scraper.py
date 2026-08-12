@@ -141,6 +141,13 @@ class SchemeScraperService:
         with open(SCHEMES_FILE_PATH, "w", encoding="utf-8") as f:
             json.dump(existing_schemes, f, indent=2, ensure_ascii=False)
 
+        # Trigger automatic RAG Vector Store re-indexing
+        try:
+            from app.rag.retriever import RAGRetriever
+            RAGRetriever().reindex_from_schemes_json()
+        except Exception as e:
+            print(f"RAG Auto-Reindexing warning: {e}")
+
         return saved_list[0] if len(saved_list) == 1 else saved_list
 
     @classmethod

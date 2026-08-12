@@ -2,7 +2,7 @@ import logging
 from typing import List, Dict, Any, Optional
 from app.schemas.user_schema import UserProfile
 from app.services.profile_extractor import ProfileExtractionEngine
-from app.services.scheme_service import SchemeRetrievalService
+from app.rag.retriever import RAGRetriever
 from app.services.recommendation_service import EligibilityEvaluator
 from app.agents.reflection_agent import ReflectionAgent
 
@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 # Initialize engine services
 extractor_engine = ProfileExtractionEngine()
-retrieval_service = SchemeRetrievalService()
+rag_retriever = RAGRetriever()
 
 # ── WORKFLOW STAGES (LANGGRAPH COMPATIBLE NODES) ─────────────────────────────
 
@@ -30,12 +30,20 @@ async def extract_profile_step(state: Dict[str, Any]) -> Dict[str, Any]:
 
 def retrieve_schemes_step(state: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Stage 2: Scheme Retrieval
-    Retrieves candidate schemes pre-filtered by state, occupation, income, category.
+    Stage 2: Scheme Retrieval via RAG (Vector Similarity Search + Profile Hard Filtering)
     """
-    candidates = retrieval_service.get_candidate_schemes(state["profile"])
+    query = state.get("query", "")
+    profile = state.get("profile", UserProfile())
+    
+    # Execute RAG hybrid retrieval
+    scored_candidates = rag_retriever.retrieve_candidates(query=query, profile=profile, top_k=15)
+    
+    candidates = [scheme for scheme, _ in scored_candidates]
+    match_scores = {scheme.id: round(score, 4) for scheme, score in scored_candidates}
+
     return {
-        "candidate_schemes": candidates
+        "candidate_schemes": candidates,
+        "match_scores": match_scores
     }
 
 def evaluate_eligibility_step(state: Dict[str, Any]) -> Dict[str, Any]:
@@ -66,13 +74,14 @@ def evaluate_eligibility_step(state: Dict[str, Any]) -> Dict[str, Any]:
 def reflection_step(state: Dict[str, Any]) -> Dict[str, Any]:
     """
     Stage 4: Reflection Step
-    Performs consistency checks and compiles agent reasoning logs via ReflectionAgent.
+    Performs consistency checks and compiles RAG-grounded agent reasoning logs via ReflectionAgent.
     """
     reflection_data = ReflectionAgent.reflect(
         query=state["query"],
         profile=state["profile"],
         eligible_schemes=state["eligible_schemes"],
-        missing_info=state["missing_info"]
+        missing_info=state["missing_info"],
+        match_scores=state.get("match_scores", {})
     )
     return {
         "reflection": reflection_data
@@ -81,18 +90,28 @@ def reflection_step(state: Dict[str, Any]) -> Dict[str, Any]:
 def format_response_step(state: Dict[str, Any]) -> Dict[str, Any]:
     """
     Stage 5: Response Formatting
-    Extracts, de-duplicates documents and formats final output schema.
+    Extracts, de-duplicates documents and formats final output schema with RAG match scores.
     """
     eligible_schemes = state["eligible_schemes"]
+    match_scores = state.get("match_scores", {})
     
     # Extract and de-duplicate documents
     documents = set()
+    formatted_schemes = []
+    
     for scheme in eligible_schemes:
         documents.update(scheme.required_documents)
+        scheme_dict = scheme.model_dump()
+        score = match_scores.get(scheme.id, 0.0)
+        # Convert float similarity score to match percentage (e.g. 0.85 -> 85%)
+        pct = max(50, min(99, int(score * 100))) if score > 0 else 80
+        scheme_dict["match_score"] = pct
+        scheme_dict["similarity_raw"] = score
+        formatted_schemes.append(scheme_dict)
 
     return {
         "profile": state["profile"].model_dump(),
-        "eligible_schemes": [s.model_dump() for s in eligible_schemes],
+        "eligible_schemes": formatted_schemes,
         "missing_info": state["missing_info"],
         "documents": sorted(list(documents)),
         "reflection": state["reflection"]

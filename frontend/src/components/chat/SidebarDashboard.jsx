@@ -80,11 +80,16 @@ export default function SidebarDashboard({ profileSummary, eligibleSchemes, miss
                 onClick={() => setSelectedSchemeDetail(scheme)}
                 className="w-full text-left flex items-center justify-between p-2.5 bg-green-50/20 hover:bg-green-50/60 border border-green-100/40 hover:border-green-300 rounded-xl text-xs text-gray-750 font-medium transition cursor-pointer"
               >
-                <div className="flex flex-col space-y-0.5 max-w-[80%]">
+                <div className="flex flex-col space-y-0.5 max-w-[70%]">
                   <span className="font-bold text-gray-800 truncate">{scheme.title || scheme.name}</span>
                   <span className="text-[9px] text-gray-400 capitalize truncate">{scheme.category}</span>
                 </div>
-                <FiChevronRight className="w-3.5 h-3.5 text-green-600 flex-shrink-0" />
+                <div className="flex items-center space-x-1">
+                  <span className="px-1.5 py-0.5 bg-emerald-100/90 text-emerald-800 rounded-md font-bold text-[9px]">
+                    {scheme.match_score ? `${scheme.match_score}% RAG` : '100% Match'}
+                  </span>
+                  <FiChevronRight className="w-3.5 h-3.5 text-green-600 flex-shrink-0" />
+                </div>
               </button>
             ))}
           </div>
