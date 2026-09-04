@@ -1,11 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { FiAward } from 'react-icons/fi';
 
 export default function Navbar() {
   return (
     <nav className="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between shadow-sm sticky top-0 z-50">
-      <Link to="/" className="flex items-center space-x-2.5">
+      <Link href="/" className="flex items-center space-x-2.5">
         <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold">
           <FiAward className="w-5 h-5" />
         </div>
@@ -16,7 +16,7 @@ export default function Navbar() {
       </Link>
       
       <div className="flex items-center space-x-4 text-xs font-semibold">
-        <Link to="/chat" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition shadow-sm">
+        <Link href="/chat" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition shadow-sm">
           Launch Chat
         </Link>
       </div>

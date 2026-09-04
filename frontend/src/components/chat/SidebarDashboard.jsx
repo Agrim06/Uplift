@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { FiCheckCircle, FiAlertCircle, FiAward, FiUserCheck, FiChevronRight } from 'react-icons/fi';
 import { useChatStore } from '../../store/useChatStore';

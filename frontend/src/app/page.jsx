@@ -1,8 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { FiCompass, FiCpu, FiAward } from 'react-icons/fi';
 
-export default function Home() {
+export default function HomePage() {
   return (
     <div className="max-w-4xl mx-auto px-6 py-12 space-y-12">
       <div className="text-center space-y-4">
@@ -19,7 +19,7 @@ export default function Home() {
 
       <div className="grid md:grid-cols-2 gap-6 pt-4">
         <Link 
-          to="/chat" 
+          href="/chat" 
           className="p-6 bg-white hover:bg-blue-50/10 border border-gray-100 hover:border-blue-300 rounded-3xl transition shadow-sm hover:shadow-md space-y-3 cursor-pointer group"
         >
           <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition">
@@ -32,7 +32,7 @@ export default function Home() {
         </Link>
 
         <Link 
-          to="/explorer" 
+          href="/explorer" 
           className="p-6 bg-white hover:bg-green-50/10 border border-gray-100 hover:border-green-300 rounded-3xl transition shadow-sm hover:shadow-md space-y-3 cursor-pointer group"
         >
           <div className="w-10 h-10 bg-green-50 text-green-600 rounded-xl flex items-center justify-center group-hover:bg-green-600 group-hover:text-white transition">

@@ -1,13 +1,15 @@
+'use client';
+
 import React, { useRef, useEffect } from 'react';
-import { useChatStore } from '../store/useChatStore';
-import chatService from '../services/chatService';
-import ChatBox from '../components/chat/ChatBox';
-import InputBar from '../components/chat/InputBar';
-import SidebarDashboard from '../components/chat/SidebarDashboard';
-import SchemeDetailDrawer from '../components/chat/SchemeDetailDrawer';
+import { useChatStore } from '../../store/useChatStore';
+import chatService from '../../services/chatService';
+import ChatBox from '../../components/chat/ChatBox';
+import InputBar from '../../components/chat/InputBar';
+import SidebarDashboard from '../../components/chat/SidebarDashboard';
+import SchemeDetailDrawer from '../../components/chat/SchemeDetailDrawer';
 import { toast } from 'react-hot-toast';
 
-export default function Chat() {
+export default function ChatPage() {
   const {
     messages,
     profileSummary,
@@ -135,7 +137,7 @@ export default function Chat() {
         </div>
       </div>
 
-      {/* Side Status Dashboard (collapses on mobile below the main panel if no flex-shrink is defined) */}
+      {/* Side Status Dashboard */}
       <div className="w-full md:w-72 lg:w-80 flex-shrink-0 h-full overflow-hidden flex flex-col pb-4 md:pb-0">
         <SidebarDashboard 
           profileSummary={profileSummary} 

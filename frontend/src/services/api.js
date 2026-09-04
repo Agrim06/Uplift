@@ -32,7 +32,7 @@ export const clearTokens = () => {
 
 // 1. Axios Instance Configuration
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api/v1',
+  baseURL: (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_API_URL) || '/api/v1',
   timeout: 10000, // 10 seconds default timeout
   headers: {
     'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ const refreshAuthToken = async () => {
   // to fetch a new token:
   try {
     const response = await axios.post(
-      `${import.meta.env.VITE_API_URL || '/api/v1'}/auth/refresh/`,
+      `${(typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_API_URL) || '/api/v1'}/auth/refresh/`,
       { refresh_token: refreshToken },
       { headers: { 'Content-Type': 'application/json' } }
     );

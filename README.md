@@ -12,9 +12,9 @@ The diagram below illustrates how user interactions flow through the **React Fro
 flowchart TD
     %% User Layer
     subgraph User Interface (Frontend)
-        A[User Input: Chat Query or Search] --> B[React + Vite App]
-        B --> C1[Chat View / Chat.jsx]
-        B --> C2[Explorer Directory / Explorer.jsx]
+        A[User Input: Chat Query or Search] --> B[Next.js App Router]
+        B --> C1[Chat View / app/chat/page.jsx]
+        B --> C2[Explorer Directory / app/explorer/page.jsx]
     end
 
     %% API Layer
@@ -90,15 +90,15 @@ flowchart TD
 
 ```text
 Uplift/
-├── frontend/                   # React 18 + Vite + TailwindCSS App
+├── frontend/                   # Next.js 14 App Router + TailwindCSS App
 │   ├── src/
-│   │   ├── components/         # UI Components
-│   │   │   ├── chat/           # ChatWindow, MessageBubble, SchemeDetailDrawer, SidebarDashboard
-│   │   │   ├── common/         # Header, Layout, LoadingSpinner
-│   │   │   └── dashboard/      # Analytics Cards & Statistics
-│   │   ├── pages/              # Chat, Explorer, Dashboard
+│   │   ├── app/                # Next.js App Router (layout, page, chat, explorer, dashboard)
+│   │   ├── components/         # UI Components (chat, dashboard, layout, providers)
 │   │   ├── services/           # api.js, chatService.js, schemeService.js
-│   │   └── routes/             # App Router configuration
+│   │   ├── store/              # Zustand global state (useChatStore.js)
+│   │   └── styles/             # Global CSS and Tailwind design tokens
+│   ├── next.config.mjs         # Next.js configuration with backend API rewrites
+│   ├── postcss.config.mjs      # PostCSS Tailwind configuration
 │   └── package.json
 │
 ├── backend/                    # FastAPI Async Python Backend
@@ -136,7 +136,7 @@ cd c:\Users\agrim\Uplift\backend
 cd c:\Users\agrim\Uplift\frontend
 npm run dev
 ```
-*Frontend runs on `http://localhost:5173`*
+*Frontend runs on `http://localhost:3000`*
 
 ### 3. Run Backend Test Suite
 ```powershell

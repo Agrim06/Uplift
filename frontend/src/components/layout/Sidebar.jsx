@@ -1,9 +1,13 @@
+'use client';
+
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { FiHome, FiCompass, FiCpu, FiGrid } from 'react-icons/fi';
 import { clsx } from 'clsx';
 
 export default function Sidebar() {
+  const pathname = usePathname();
   const links = [
     { to: '/', label: 'Home', icon: FiHome },
     { to: '/explorer', label: 'Explorer', icon: FiCompass },
@@ -15,11 +19,12 @@ export default function Sidebar() {
     <aside className="w-64 border-r border-gray-100 bg-white hidden md:flex flex-col p-4 space-y-1">
       {links.map((link) => {
         const Icon = link.icon;
+        const isActive = pathname === link.to;
         return (
-          <NavLink
+          <Link
             key={link.to}
-            to={link.to}
-            className={({ isActive }) => clsx(
+            href={link.to}
+            className={clsx(
               "flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition cursor-pointer",
               isActive 
                 ? "bg-blue-50/50 text-blue-600 border-r-4 border-blue-600" 
@@ -28,7 +33,7 @@ export default function Sidebar() {
           >
             <Icon className="w-4 h-4 flex-shrink-0" />
             <span>{link.label}</span>
-          </NavLink>
+          </Link>
         );
       })}
     </aside>

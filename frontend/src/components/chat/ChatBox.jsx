@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useRef } from 'react';
 import MessageBubble from './MessageBubble';
 import { FiCompass, FiInfo } from 'react-icons/fi';

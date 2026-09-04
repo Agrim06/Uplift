@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import schemeService from '../services/schemeService';
+'use client';
+
+import React, { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+import schemeService from '../../services/schemeService';
 import { FiSearch, FiSliders, FiFileText, FiExternalLink } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 
-export default function Explorer() {
-  const [searchParams] = useSearchParams();
+function ExplorerContent() {
+  const searchParams = useSearchParams();
   const schemeIdParam = searchParams.get('id');
 
   const [schemes, setSchemes] = useState([]);
@@ -216,5 +218,17 @@ export default function Explorer() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function ExplorerPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center h-[calc(100vh-80px)] text-xs text-gray-400">
+        Loading schemes explorer...
+      </div>
+    }>
+      <ExplorerContent />
+    </Suspense>
   );
 }

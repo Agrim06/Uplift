@@ -1,9 +1,11 @@
+'use client';
+
 import React from 'react';
-import { useChatStore } from '../store/useChatStore';
-import { Link } from 'react-router-dom';
+import { useChatStore } from '../../store/useChatStore';
+import Link from 'next/link';
 import { FiCheckSquare, FiAlertOctagon, FiStar, FiGrid } from 'react-icons/fi';
 
-export default function Dashboard() {
+export default function DashboardPage() {
   const { profileSummary, eligibleSchemes, missingInfo } = useChatStore();
   const profileKeys = Object.keys(profileSummary || {});
 
@@ -94,7 +96,7 @@ export default function Dashboard() {
                     <span className="text-[9px] text-gray-450 capitalize font-medium block">{scheme.category}</span>
                   </div>
                   <Link
-                    to={`/explorer?id=${scheme.id || scheme.scheme_id}`}
+                    href={`/explorer?id=${scheme.id || scheme.scheme_id}`}
                     className="text-[10px] font-bold text-blue-600 bg-white border border-gray-150 px-2.5 py-1 rounded-xl shadow-sm hover:border-blue-400 transition"
                   >
                     View Details
