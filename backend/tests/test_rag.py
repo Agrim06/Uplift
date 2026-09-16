@@ -62,11 +62,11 @@ def test_scheme_embedder(sample_schemes):
     sim_student = embedder.cosine_similarity(vec_query, embedder.embed_scheme(sample_schemes[1]))
     sim_farmer = embedder.cosine_similarity(vec_query, embedder.embed_scheme(sample_schemes[0]))
     
-    # Query about scholarship should score higher similarity to student scheme than farmer scheme
     assert sim_student > sim_farmer
 
-def test_vector_store_in_memory(sample_schemes):
-    store = VectorStore()
+def test_chroma_vector_store(sample_schemes, tmp_path):
+    db_dir = str(tmp_path / "chroma_test_db")
+    store = VectorStore(db_path=db_dir)
     store.build_index(sample_schemes)
     
     results = store.similarity_search("farming income assistance", top_k=2)
@@ -75,13 +75,13 @@ def test_vector_store_in_memory(sample_schemes):
     assert top_scheme.id == "SCH-1"
     assert top_score > 0.0
 
-def test_rag_retriever_hybrid_filtering(sample_schemes):
-    store = VectorStore()
+def test_chroma_rag_retriever_hybrid_filtering(sample_schemes, tmp_path):
+    db_dir = str(tmp_path / "chroma_retriever_db")
+    store = VectorStore(db_path=db_dir)
     store.build_index(sample_schemes)
     
     retriever = RAGRetriever(vector_store=store)
     
-    # Profile as Student, SC category, Maharashtra state
     profile = UserProfile(occupation="Student", category="SC", state="Maharashtra")
     candidates = retriever.retrieve_candidates(query="college fee assistance", profile=profile)
     

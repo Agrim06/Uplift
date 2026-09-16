@@ -26,6 +26,12 @@ build/
 *.swp
 *.swo
 
+# ── Vector Database / Cache ──────────────────────────────────────────────────
+chroma_db/
+data/chroma_db/
+*.bin
+*.sqlite3
+
 # ── Misc ─────────────────────────────────────────────────────────────────────
 *.log
 .DS_Store

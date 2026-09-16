@@ -29,6 +29,12 @@ yarn-error.log*
 *.swp
 *.swo
 
+# ── Vector Database / Cache ──────────────────────────────────────────────────
+chroma_db/
+**/chroma_db/
+*.bin
+*.sqlite3
+
 # ── Misc ─────────────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
