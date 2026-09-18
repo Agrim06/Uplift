@@ -7,3 +7,5 @@ httpx==0.28.1
 anyio==4.13.0
 watchfiles==1.2.0
 chromadb==1.5.9
+google-genai
+python-multipart

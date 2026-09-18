@@ -2,7 +2,8 @@ import os
 import json 
 import re
 from typing import Optional, List, Any, Tuple, Dict
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from app.schemas.user_schema import UserProfile
 
 MANDATORY_FIELDS = ["age", "state", "income", "occupation", "education"]
@@ -84,11 +85,7 @@ class ProfileExtractionEngine:
             return self._mock_llm_extract(query)
 
         try:
-            genai.configure(api_key=api_key)
-            model = genai.GenerativeModel(
-                model_name="gemini-2.5-flash",
-                generation_config={"response_mime_type": "application/json"}
-            )
+            client = genai.Client(api_key=api_key)
             
             prompt = f"""
             You are an expert profile extraction AI. Analyze the user's natural language input and extract their profile attributes into a JSON object.
@@ -107,7 +104,11 @@ class ProfileExtractionEngine:
             Output JSON:
             """
             
-            response = model.generate_content(prompt)
+            response = client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt,
+                config=types.GenerateContentConfig(response_mime_type="application/json")
+            )
             data = json.loads(response.text)
             
             return {

@@ -43,10 +43,10 @@ MOCK_PDF_GEMINI_RESPONSE = """{
 @pytest.mark.anyio
 async def test_pdf_ingestion_service():
     with patch.object(PDFIngestionService, 'extract_text_from_pdf_bytes', return_value="Smart Farmer Solar Pump Subsidy text..."):
-        with patch('google.generativeai.GenerativeModel') as mock_model_cls:
-            mock_model_inst = MagicMock()
-            mock_model_inst.generate_content.return_value = MagicMock(text=MOCK_PDF_GEMINI_RESPONSE)
-            mock_model_cls.return_value = mock_model_inst
+        with patch('google.genai.Client') as mock_client_cls:
+            mock_client_inst = MagicMock()
+            mock_client_inst.models.generate_content.return_value = MagicMock(text=MOCK_PDF_GEMINI_RESPONSE)
+            mock_client_cls.return_value = mock_client_inst
             
             with patch.dict(os.environ, {"GEMINI_API_KEY": "test-key"}):
                 result = await PDFIngestionService.structure_scheme_from_pdf_text("Dummy PDF content", "solar_pump_guidelines.pdf")

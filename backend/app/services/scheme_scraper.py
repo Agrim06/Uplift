@@ -4,7 +4,8 @@ import re
 import httpx
 from bs4 import BeautifulSoup
 from typing import Dict, Any, List, Optional
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from app.schemas.scheme_schema import Scheme
 from app.services.scheme_service import SCHEMES_FILE_PATH
 
@@ -43,11 +44,7 @@ class SchemeScraperService:
         if not api_key:
             raise ValueError("GEMINI_API_KEY environment variable is missing. Cannot run AI structuring.")
 
-        genai.configure(api_key=api_key)
-        model = genai.GenerativeModel(
-            model_name="gemini-2.5-flash",
-            generation_config={"response_mime_type": "application/json"}
-        )
+        client = genai.Client(api_key=api_key)
 
         prompt = f"""
         You are an expert government scheme data extraction AI.
@@ -83,7 +80,11 @@ class SchemeScraperService:
             - "description": human-friendly rule description
         """
 
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(response_mime_type="application/json")
+        )
         scheme_data = json.loads(response.text)
 
         # Enforce official source URL

@@ -3,7 +3,8 @@ import json
 import io
 from typing import Dict, Any, List
 import pypdf
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from app.schemas.scheme_schema import Scheme
 from app.services.scheme_scraper import SchemeScraperService
 
@@ -35,11 +36,7 @@ class PDFIngestionService:
         if not api_key:
             raise ValueError("GEMINI_API_KEY environment variable is missing.")
 
-        genai.configure(api_key=api_key)
-        model = genai.GenerativeModel(
-            model_name="gemini-2.5-flash",
-            generation_config={"response_mime_type": "application/json"}
-        )
+        client = genai.Client(api_key=api_key)
 
         prompt = f"""
         You are an expert government scheme data extraction AI.
@@ -80,7 +77,11 @@ class PDFIngestionService:
         # Retry loop for Gemini API with backoff; fallback to heuristic parser if quota exceeded
         for attempt in range(2):
             try:
-                response = model.generate_content(prompt)
+                response = client.models.generate_content(
+                    model="gemini-2.5-flash",
+                    contents=prompt,
+                    config=types.GenerateContentConfig(response_mime_type="application/json")
+                )
                 scheme_data = json.loads(response.text)
                 return scheme_data
             except Exception as e:

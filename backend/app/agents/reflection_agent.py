@@ -1,6 +1,6 @@
 import os
 from typing import List, Dict, Any, Optional
-import google.generativeai as genai
+from google import genai
 from app.schemas.user_schema import UserProfile
 from app.schemas.scheme_schema import Scheme
 
@@ -74,8 +74,7 @@ class ReflectionAgent:
 
         if api_key:
             try:
-                genai.configure(api_key=api_key)
-                model = genai.GenerativeModel("gemini-2.5-flash")
+                client = genai.Client(api_key=api_key)
                 
                 prompt = f"""
                 You are an empathetic, grounded government scheme advisor assistant called Uplift.
@@ -98,7 +97,10 @@ class ReflectionAgent:
                 Response:
                 """
                 
-                response = model.generate_content(prompt)
+                response = client.models.generate_content(
+                    model="gemini-2.5-flash",
+                    contents=prompt
+                )
                 agent_reply = response.text.strip()
             except Exception as e:
                 print(f"Gemini RAG Reflection generation failed: {str(e)}")
