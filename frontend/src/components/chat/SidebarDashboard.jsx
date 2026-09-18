@@ -4,7 +4,9 @@ import { useChatStore } from '../../store/useChatStore';
 
 export default function SidebarDashboard({ profileSummary, eligibleSchemes, missingInfo }) {
   const { setSelectedSchemeDetail } = useChatStore();
-  const profileKeys = Object.keys(profileSummary || {});
+  const verifiedTraits = Object.entries(profileSummary || {}).filter(
+    ([_, val]) => val !== null && val !== undefined && val !== ''
+  );
   
   return (
     <div className="w-full flex flex-col space-y-4 h-full overflow-y-auto pr-1">
@@ -15,17 +17,17 @@ export default function SidebarDashboard({ profileSummary, eligibleSchemes, miss
           <FiUserCheck className="w-4 h-4 text-blue-600" />
           <h3 className="font-bold text-xs">Verified Profile</h3>
         </div>
-        {profileKeys.length === 0 ? (
+        {verifiedTraits.length === 0 ? (
           <p className="text-xs text-gray-400 italic py-1">No traits verified yet. Start conversing to update.</p>
         ) : (
           <div className="grid grid-cols-2 gap-2 max-h-[150px] overflow-y-auto pr-0.5">
-            {profileKeys.map((key) => (
+            {verifiedTraits.map(([key, val]) => (
               <div key={key} className="p-2 bg-gray-50 border border-gray-100 rounded-lg text-xs">
                 <span className="text-gray-400 font-bold uppercase tracking-wider text-[8px] block truncate">
                   {key.replace('_', ' ')}
                 </span>
                 <span className="text-gray-700 font-semibold truncate block capitalize mt-0.5">
-                  {String(profileSummary[key])}
+                  {String(val)}
                 </span>
               </div>
             ))}
@@ -39,7 +41,9 @@ export default function SidebarDashboard({ profileSummary, eligibleSchemes, miss
           <FiAlertCircle className="w-4 h-4 text-amber-500" />
           <h3 className="font-bold text-xs">Required Data</h3>
         </div>
-        {missingInfo.length === 0 ? (
+        {verifiedTraits.length === 0 ? (
+          <p className="text-xs text-gray-400 italic py-1">Start conversing to identify pending requirements.</p>
+        ) : missingInfo.length === 0 ? (
           <div className="flex items-center space-x-2 text-green-600 py-1 text-xs">
             <FiCheckCircle className="w-3.5 h-3.5 flex-shrink-0" />
             <span className="font-semibold">Profile fully completed!</span>
