@@ -72,13 +72,22 @@ class ProfileExtractionEngine:
         return missing
     
     async def extract_profile(self, query: str, existing_profile: Optional[UserProfile] = None) -> Tuple[UserProfile, List[str]]:
-        raw_extraction = self._gemini_extract(query)
+        # Fast path: check if fast regex pattern matcher extracts parameters directly (<1ms)
+        mock_result = self._mock_llm_extract(query)
+        has_entities = any(v is not None for v in mock_result.values())
+        
+        # If fast-path regex found attributes or if query is a short form response, avoid remote LLM latency
+        if has_entities or len(query.strip().split()) <= 7:
+            raw_extraction = mock_result
+        else:
+            raw_extraction = await self._gemini_extract(query)
+
         normalized_data = self.validate_and_normalize(raw_extraction)
         final_profile = self.merge_profiles(existing_profile, normalized_data)
         missing_fields = self.detect_missing_fields(final_profile)
         return final_profile, missing_fields
 
-    def _gemini_extract(self, query: str) -> Dict[str, Any]:
+    async def _gemini_extract(self, query: str) -> Dict[str, Any]:
         api_key = os.getenv("GEMINI_API_KEY")
         if not api_key:
             # Resilient fallback if no key is configured
@@ -104,7 +113,8 @@ class ProfileExtractionEngine:
             Output JSON:
             """
             
-            response = client.models.generate_content(
+            # Non-blocking async API call
+            response = await client.aio.models.generate_content(
                 model="gemini-2.5-flash",
                 contents=prompt,
                 config=types.GenerateContentConfig(response_mime_type="application/json")
@@ -122,7 +132,7 @@ class ProfileExtractionEngine:
             }
         except Exception as e:
             # Fall back to mock extract on network or rate limit failure
-            print(f"Gemini API call failed: {str(e)}. Falling back to mock extractor.")
+            print(f"Gemini async API call failed: {str(e)}. Falling back to mock extractor.")
             return self._mock_llm_extract(query)
 
     def _mock_llm_extract(self, query: str) -> Dict[str, Any]:

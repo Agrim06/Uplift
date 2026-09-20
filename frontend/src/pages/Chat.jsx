@@ -106,8 +106,7 @@ export default function Chat() {
         {/* Chat Panel Header */}
         <div className="flex justify-between items-center border-b border-gray-100 pb-3 mb-4 flex-shrink-0">
           <div>
-            <h1 className="text-lg font-bold text-gray-800">Agentic Recommendation Assistant</h1>
-            <p className="text-[10px] text-gray-400">Describe your profile in natural language to find matching schemes</p>
+            <h1 className="text-lg font-bold text-gray-800">Government Schemes Recommendation Assistant</h1>
           </div>
           <button 
             type="button"

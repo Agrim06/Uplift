@@ -35,13 +35,14 @@ class ReflectionAgent:
         return False
 
     @classmethod
-    def reflect(
+    async def reflect(
         cls, 
         query: str, 
         profile: UserProfile, 
         eligible_schemes: List[Scheme], 
         missing_info: List[str],
-        match_scores: Optional[Dict[str, float]] = None
+        match_scores: Optional[Dict[str, float]] = None,
+        skip_llm: bool = False
     ) -> Dict[str, Any]:
         conflicts = cls.detect_conflicts(profile)
         low_confidence = cls.evaluate_confidence(query, profile)
@@ -60,19 +61,23 @@ class ReflectionAgent:
         elif not need_more_info:
             reasons.append("No matching eligible schemes found.")
 
-        # Build RAG Context snippets
-        rag_passages = []
-        for s in eligible_schemes[:3]:
-            score = match_scores.get(s.id, 0.0)
-            passage = f"• {s.name} (RAG Match Score: {int(score * 100)}%): {s.description}. Benefits: {s.benefits}"
-            rag_passages.append(passage)
-        rag_context_text = "\n".join(rag_passages) if rag_passages else "No relevant schemes retrieved."
-
-        # ── DYNAMIC RAG CONVERSATIONAL REPLY GENERATION ──
+        # Fast path: if user query is a simple form submission, use instant template response (<1ms)
+        clean_q = query.strip().lower()
+        is_form_reply = clean_q.startswith("my ") or len(clean_q.split()) <= 5
+        
         agent_reply = None
         api_key = os.getenv("GEMINI_API_KEY")
 
-        if api_key:
+        # Call remote Gemini LLM only when not in fast-path form mode and not explicitly skipped
+        if api_key and not skip_llm and not is_form_reply:
+            # Build RAG Context snippets
+            rag_passages = []
+            for s in eligible_schemes[:3]:
+                score = match_scores.get(s.id, 0.0)
+                passage = f"• {s.name} (RAG Match Score: {int(score * 100)}%): {s.description}. Benefits: {s.benefits}"
+                rag_passages.append(passage)
+            rag_context_text = "\n".join(rag_passages) if rag_passages else "No relevant schemes retrieved."
+
             try:
                 client = genai.Client(api_key=api_key)
                 
@@ -96,14 +101,14 @@ class ReflectionAgent:
                 
                 Response:
                 """
-                
-                response = client.models.generate_content(
+
+                response = await client.aio.models.generate_content(
                     model="gemini-2.5-flash",
                     contents=prompt
                 )
                 agent_reply = response.text.strip()
             except Exception as e:
-                print(f"Gemini RAG Reflection generation failed: {str(e)}")
+                print(f"Gemini RAG Reflection async generation failed: {str(e)}")
 
         # Heuristic-based fallback if API is not set or fails
         if not agent_reply:

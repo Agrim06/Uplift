@@ -42,11 +42,12 @@ def test_evaluate_confidence():
     p_extracted = UserProfile(age=20, state="Karnataka")
     assert ReflectionAgent.evaluate_confidence("I am 20 year old student from Karnataka", p_extracted) is False
 
-def test_reflect_logic():
+@pytest.mark.anyio
+async def test_reflect_logic():
     p = UserProfile(age=20, state="Karnataka") # missing income, education, occupation
     missing = ["income", "education", "occupation"]
     
-    result = ReflectionAgent.reflect(
+    result = await ReflectionAgent.reflect(
         query="I am 20 year old student from Karnataka",
         profile=p,
         eligible_schemes=[],

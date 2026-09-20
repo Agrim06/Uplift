@@ -1,4 +1,5 @@
 import logging
+import asyncio
 from typing import List, Dict, Any, Optional
 from app.schemas.user_schema import UserProfile
 from app.services.profile_extractor import ProfileExtractionEngine
@@ -17,7 +18,7 @@ rag_retriever = RAGRetriever()
 async def extract_profile_step(state: Dict[str, Any]) -> Dict[str, Any]:
     """
     Stage 1: Profile Extraction
-    Extracts user details from query and merges them with any existing profile.
+    Extracts user details via fast-path regex or non-blocking async Gemini call.
     """
     profile, missing_fields = await extractor_engine.extract_profile(
         query=state["query"],
@@ -28,15 +29,20 @@ async def extract_profile_step(state: Dict[str, Any]) -> Dict[str, Any]:
         "missing_fields": missing_fields
     }
 
-def retrieve_schemes_step(state: Dict[str, Any]) -> Dict[str, Any]:
+async def retrieve_schemes_step(state: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Stage 2: Scheme Retrieval via RAG (Vector Similarity Search + Profile Hard Filtering)
+    Stage 2: Scheme Retrieval via RAG (Non-blocking thread execution for ChromaDB search)
     """
     query = state.get("query", "")
     profile = state.get("profile", UserProfile())
     
-    # Execute RAG hybrid retrieval
-    scored_candidates = rag_retriever.retrieve_candidates(query=query, profile=profile, top_k=15)
+    # Execute RAG hybrid retrieval without blocking the main event loop
+    scored_candidates = await asyncio.to_thread(
+        rag_retriever.retrieve_candidates,
+        query=query,
+        profile=profile,
+        top_k=15
+    )
     
     candidates = [scheme for scheme, _ in scored_candidates]
     match_scores = {scheme.id: round(score, 4) for scheme, score in scored_candidates}
@@ -71,12 +77,12 @@ def evaluate_eligibility_step(state: Dict[str, Any]) -> Dict[str, Any]:
         "missing_info": sorted(list(missing_info_set))
     }
 
-def reflection_step(state: Dict[str, Any]) -> Dict[str, Any]:
+async def reflection_step(state: Dict[str, Any]) -> Dict[str, Any]:
     """
     Stage 4: Reflection Step
-    Performs consistency checks and compiles RAG-grounded agent reasoning logs via ReflectionAgent.
+    Performs consistency checks and compiles RAG-grounded agent reasoning logs asynchronously.
     """
-    reflection_data = ReflectionAgent.reflect(
+    reflection_data = await ReflectionAgent.reflect(
         query=state["query"],
         profile=state["profile"],
         eligible_schemes=state["eligible_schemes"],
@@ -121,7 +127,7 @@ def format_response_step(state: Dict[str, Any]) -> Dict[str, Any]:
 
 async def run_workflow(query: str, existing_profile: Optional[UserProfile] = None) -> Dict[str, Any]:
     """
-    Sequences workflow nodes using basic function chaining.
+    Sequences workflow nodes using fully non-blocking asynchronous chaining.
     """
     # Initialize Master State
     state = {
@@ -137,17 +143,17 @@ async def run_workflow(query: str, existing_profile: Optional[UserProfile] = Non
     }
     
     try:
-        # 1. Profile Extraction
+        # 1. Profile Extraction (Fast-path or single non-blocking async LLM pass)
         state.update(await extract_profile_step(state))
         
-        # 2. Scheme Retrieval
-        state.update(retrieve_schemes_step(state))
+        # 2. Scheme Retrieval (Non-blocking ChromaDB thread)
+        state.update(await retrieve_schemes_step(state))
         
-        # 3. Eligibility Evaluation
+        # 3. Eligibility Evaluation (In-memory rule engine)
         state.update(evaluate_eligibility_step(state))
         
-        # 4. Reflection
-        state.update(reflection_step(state))
+        # 4. Reflection (Non-blocking async LLM or instant contextual template)
+        state.update(await reflection_step(state))
         
         # 5. Format Response
         return format_response_step(state)

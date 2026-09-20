@@ -1,6 +1,6 @@
 import os
 import json
-from typing import List
+from typing import List, Optional
 from fastapi import APIRouter, Query, HTTPException
 from app.schemas.scheme_schema import Scheme
 
@@ -11,16 +11,26 @@ SCHEMES_FILE_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "..", "..", "..", "data", "schemes.json")
 )
 
+_CACHE_SCHEMES: Optional[List[Scheme]] = None
+_CACHE_MTIME: float = 0.0
+
 def load_schemes_from_json() -> List[Scheme]:
+    global _CACHE_SCHEMES, _CACHE_MTIME
     if not os.path.exists(SCHEMES_FILE_PATH):
         raise HTTPException(
             status_code=500,
             detail=f"Schemes database file not found at: {SCHEMES_FILE_PATH}"
         )
     try:
+        mtime = os.path.getmtime(SCHEMES_FILE_PATH)
+        if _CACHE_SCHEMES is not None and mtime == _CACHE_MTIME:
+            return _CACHE_SCHEMES
+
         with open(SCHEMES_FILE_PATH, "r", encoding="utf-8") as f:
             data = json.load(f)
-            return [Scheme(**item) for item in data]
+            _CACHE_SCHEMES = [Scheme(**item) for item in data]
+            _CACHE_MTIME = mtime
+            return _CACHE_SCHEMES
     except Exception as e:
         raise HTTPException(
             status_code=500,

@@ -35,7 +35,7 @@ export default function ChatBox({ messages, isTyping, onSendMessage }) {
           </div>
           <div className="w-full max-w-lg space-y-2">
             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider text-left pl-1">
-              Select a starter prompt:
+              Choose a prompt or type it below:
             </p>
             {STARTER_SUGGESTIONS.map((suggestion) => (
               <button
