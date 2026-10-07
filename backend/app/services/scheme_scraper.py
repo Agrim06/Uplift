@@ -142,6 +142,13 @@ class SchemeScraperService:
         with open(SCHEMES_FILE_PATH, "w", encoding="utf-8") as f:
             json.dump(existing_schemes, f, indent=2, ensure_ascii=False)
 
+        # Invalidate and reload RAM schemes cache
+        try:
+            from app.services.scheme_service import reload_schemes_cache
+            reload_schemes_cache()
+        except Exception as e:
+            print(f"Scheme cache reload warning: {e}")
+
         # Trigger automatic RAG Vector Store re-indexing
         try:
             from app.rag.retriever import RAGRetriever

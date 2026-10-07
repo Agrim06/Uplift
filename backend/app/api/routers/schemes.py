@@ -1,41 +1,19 @@
 import os
-import json
 from typing import List, Optional
 from fastapi import APIRouter, Query, HTTPException
 from app.schemas.scheme_schema import Scheme
+from app.services.scheme_service import (
+    get_all_schemes,
+    get_cached_scheme_by_id,
+    search_cached_schemes,
+    reload_schemes_cache
+)
 
 router = APIRouter()
 
-# Construct path to schemes.json relative to this file
-SCHEMES_FILE_PATH = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "..", "..", "data", "schemes.json")
-)
-
-_CACHE_SCHEMES: Optional[List[Scheme]] = None
-_CACHE_MTIME: float = 0.0
-
 def load_schemes_from_json() -> List[Scheme]:
-    global _CACHE_SCHEMES, _CACHE_MTIME
-    if not os.path.exists(SCHEMES_FILE_PATH):
-        raise HTTPException(
-            status_code=500,
-            detail=f"Schemes database file not found at: {SCHEMES_FILE_PATH}"
-        )
-    try:
-        mtime = os.path.getmtime(SCHEMES_FILE_PATH)
-        if _CACHE_SCHEMES is not None and mtime == _CACHE_MTIME:
-            return _CACHE_SCHEMES
-
-        with open(SCHEMES_FILE_PATH, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            _CACHE_SCHEMES = [Scheme(**item) for item in data]
-            _CACHE_MTIME = mtime
-            return _CACHE_SCHEMES
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error reading schemes database: {str(e)}"
-        )
+    """Provides backwards-compatible interface returning in-memory cached schemes."""
+    return get_all_schemes()
 
 @router.get("/", response_model=List[Scheme], summary="List all government schemes")
 async def get_schemes(
@@ -43,36 +21,20 @@ async def get_schemes(
     search: str = Query(None, description="Search keyword in scheme title, description, category, state, etc."),
     limit: int = Query(100, description="Maximum number of schemes to return")
 ):
-    schemes = load_schemes_from_json()
-    
-    if state:
-        # Filter by state (case-insensitive)
-        # Central schemes apply nationally and are returned for any state filter.
-        state_lower = state.lower()
-        schemes = [
-            s for s in schemes 
-            if s.state.lower() == "central" or s.state.lower() == state_lower
-        ]
-        
-    if search and search.strip():
-        q = search.strip().lower()
-        filtered = []
-        for s in schemes:
-            cat_str = " ".join(s.category).lower() if isinstance(s.category, list) else str(s.category).lower()
-            text_blob = f"{s.name} {s.description} {s.scheme_type} {s.target_group} {s.state} {s.occupation} {s.education_requirement} {s.benefits} {cat_str}".lower()
-            if q in text_blob:
-                filtered.append(s)
-        schemes = filtered
-
-    return schemes[:limit]
+    """
+    Returns filtered schemes directly from RAM memory index. Zero disk I/O.
+    """
+    return search_cached_schemes(state=state, search=search, limit=limit)
 
 @router.get("/{scheme_id}", response_model=Scheme, summary="Get Specific scheme details")
 async def get_scheme_by_id(scheme_id: str):
-    schemes = load_schemes_from_json()
-    for s in schemes:
-        if s.id.lower() == scheme_id.lower():
-            return s
-    raise HTTPException(status_code=404, detail=f"Scheme with ID '{scheme_id}' not found.")
+    """
+    O(1) in-memory scheme lookup. Zero disk I/O.
+    """
+    scheme = get_cached_scheme_by_id(scheme_id)
+    if not scheme:
+        raise HTTPException(status_code=404, detail=f"Scheme with ID '{scheme_id}' not found.")
+    return scheme
 
 from pydantic import BaseModel
 

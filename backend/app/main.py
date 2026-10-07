@@ -15,10 +15,13 @@ from app.rag.retriever import RAGRetriever
 async def lifespan(app: FastAPI):
     print("Starting up Uplift RAG backend...")
     try:
+        from app.services.scheme_service import reload_schemes_cache
+        cached = reload_schemes_cache()
+        print(f"In-memory schemes cache pre-warmed with {len(cached)} schemes.")
         retriever = RAGRetriever()
         print(f"RAG Vector Store ready with {len(retriever.vector_store.schemes)} schemes indexed.")
     except Exception as e:
-        print(f"RAG initialization error: {e}")
+        print(f"RAG/Cache initialization error: {e}")
     yield
     print("Shutting down...")
 
