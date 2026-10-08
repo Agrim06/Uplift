@@ -65,6 +65,14 @@ class RAGRetriever:
 
             filtered_candidates.append((scheme, score))
 
-        # Sort by similarity score descending
-        filtered_candidates.sort(key=lambda x: x[1], reverse=True)
+        # Prioritize schemes with verified descriptions & benefits, then vector similarity score
+        def rank_key(item: Tuple[Scheme, float]) -> Tuple[int, float]:
+            scheme, score = item
+            has_rich_content = (
+                bool(scheme.description) and "not available" not in scheme.description.lower() and
+                bool(scheme.benefits) and "not detailed" not in scheme.benefits.lower()
+            )
+            return (1 if has_rich_content else 0, score)
+
+        filtered_candidates.sort(key=rank_key, reverse=True)
         return filtered_candidates[:top_k]

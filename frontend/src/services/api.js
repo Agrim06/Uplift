@@ -33,7 +33,7 @@ export const clearTokens = () => {
 // 1. Axios Instance Configuration
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '/api/v1',
-  timeout: 10000, // 10 seconds default timeout
+  timeout: 30000, // 30 seconds default timeout for AI processing
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
