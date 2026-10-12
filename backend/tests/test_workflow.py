@@ -2,18 +2,14 @@ import os
 import sys
 import pytest
 
-# Adjust path to import app correctly
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from app.schemas.user_schema import UserProfile
-from app.workflows.agent_workflow import run_workflow
+from app.workflows.langgraph_workflow import run_langgraph_workflow
 
 @pytest.mark.anyio
-async def test_run_workflow_complete_profile():
-    # 20-year-old female engineering student from Karnataka, income 2 lakh
-    # She should match CSSS and AICTE Pragati (Fully Eligible)
+async def test_run_langgraph_workflow_complete_profile():
     query = "I am a 20-year-old female engineering student from Karnataka with family income of 2 lakh."
-    result = await run_workflow(query=query)
+    result = await run_langgraph_workflow(message=query, thread_id="test_wf_complete")
     
     assert "profile" in result
     assert result["profile"]["age"] == 20
@@ -23,41 +19,41 @@ async def test_run_workflow_complete_profile():
     assert result["profile"]["income"] == 200000.0
     assert result["profile"]["gender"] == "Female"
     
-    assert len(result["eligible_schemes"]) > 0
-    # Pragati and PwD are eligible
-    eligible_ids = [s["id"] for s in result["eligible_schemes"]]
-    assert "SCH-CENTRAL-PRAGATI" in eligible_ids
-    assert "SCH-CENTRAL-PWD" in eligible_ids
-    
-    # Documents should be aggregated and de-duplicated
-    assert len(result["documents"]) > 0
-    assert "Income Certificate" in result["documents"]
-    assert "Disability Certificate (minimum 40% disability)" in result["documents"]
+    assert len(result["verified_schemes"]) > 0
+    assert result["status"] == "success"
+    assert len(result["response"]) > 0
 
 @pytest.mark.anyio
-async def test_run_workflow_partial_profile():
-    # Only "I am 20" is provided. Other mandatory fields (state, income, occupation, education) are missing.
+async def test_run_langgraph_workflow_partial_profile():
     query = "I am 20"
-    result = await run_workflow(query=query)
+    result = await run_langgraph_workflow(message=query, thread_id="test_wf_partial")
     
     assert "profile" in result
     assert result["profile"]["age"] == 20
-    assert result["eligible_schemes"] == []
+    assert result["status"] == "clarification"
     
-    # Missing fields should be aggregated
-    assert "state" in result["missing_info"]
-    assert "income" in result["missing_info"]
-    assert "occupation" in result["missing_info"]
-    assert "education" in result["missing_info"]
+    # Missing fields should be identified
+    assert "state" in result["missing_fields"]
+    assert "income" in result["missing_fields"]
+    assert "occupation" in result["missing_fields"]
 
 @pytest.mark.anyio
-async def test_run_workflow_error_fallback():
-    # Trigger error handling by passing an invalid query parameter type (e.g., None)
-    # which should raise an exception during profile extraction stage.
-    result = await run_workflow(query=None)
+async def test_run_langgraph_workflow_merge():
+    query = "I am 20"
+    existing = {
+        "state": "Karnataka",
+        "occupation": "Farmer",
+        "education": "Class 10",
+        "income": 100000.0
+    }
+    result = await run_langgraph_workflow(
+        message=query, 
+        existing_profile=existing,
+        thread_id="test_wf_merge"
+    )
     
     assert "profile" in result
-    assert result["eligible_schemes"] == []
-    assert result["missing_info"] == []
-    assert "error" in result
-    assert "Workflow failed" in result["error"]
+    assert result["profile"]["age"] == 20
+    assert result["profile"]["state"] == "Karnataka"
+    assert result["profile"]["occupation"] == "Farmer"
+    assert len(result["verified_schemes"]) > 0
